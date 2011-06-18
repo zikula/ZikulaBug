@@ -1,0 +1,25 @@
+﻿<?xml version="1.0"?>
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+  <Description about="urn:mozilla:install-manifest">
+    <em:id>ZikulaBug@code.zikula.org</em:id>
+    <em:version>0.0.1</em:version>
+    <em:type>2</em:type>
+   
+    <!-- Firefox -->
+    <em:targetApplication>
+      <Description>
+        <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+        <em:minVersion>4.0</em:minVersion>
+        <em:maxVersion>4.0.*</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+
+    <em:name>ZikulaBug</em:name>
+    <em:description>Zikula for Firebug Extension</em:description>
+    <em:creator>Paweł Preneta</em:creator>
+    <em:homepageURL>http://code.zikula.org/bianor/ZikulaBug</em:homepageURL>
+  </Description>      
+</RDF>

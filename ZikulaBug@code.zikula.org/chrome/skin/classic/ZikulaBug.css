@@ -1,0 +1,144 @@
+/* General */
+.panelNode-ZikulaBugPanel {
+    background: #EEEEEE;
+}
+.panelNode-ZikulaBugPanel .ZikulaBugWrapper h1 {
+    margin: 0;
+    padding: 0.67em 0;
+}
+.panelNode-ZikulaBugPanel .ZikulaBugWrapper {
+    margin: 0 0 0 29px;
+    background: -moz-field;
+    border-left: 1px solid #CCCCCC;
+    min-height: 100%;
+}
+.panelNode-ZikulaBugPanel .zkOpener {
+    background-image: url(chrome://firebug/skin/win/twistyClosed.png);
+    background-repeat: no-repeat;
+    background-position: 2px 1px;
+    min-height: 12px;
+    padding-left: 20px;
+    cursor: pointer;
+    float: left;
+}
+.panelNode-ZikulaBugPanel .varTag {
+    margin-left: 20px;
+}
+.panelNode-ZikulaBugPanel .opened > .zkOpener,
+.panelNode-ZikulaBugPanel .zkOpener.opened {
+      background-image: url(chrome://firebug/skin/win/twistyOpen.png);
+}
+
+.panelNode-ZikulaBugPanel .definitionRow {
+    clear: both;
+    border-bottom: 1px solid #D7D7D7;
+    padding: 3px 13px 3px 5px;
+    overflow: hidden;
+}
+.panelNode-ZikulaBugPanel .definitionLabel {
+    font-weight: bold;
+    float: left;
+    width:  30%
+}
+.panelNode-ZikulaBugPanel .definitionValue {
+    float: left;
+    width: 50%;
+}
+.panelNode-ZikulaBugPanel [visible=false] {
+    visibility: hidden;
+}
+
+/* General tables */
+.panelNode-ZikulaBugPanel table td {
+    vertical-align: top;
+}
+.panelNode-ZikulaBugPanel table .tableCellBox {
+    padding: 3px 13px 3px 5px;
+}
+.panelNode-ZikulaBugPanel table .tableCell {
+    border-bottom: 1px solid #D7D7D7;
+}
+.panelNode-ZikulaBugPanel table .dataNum {
+    text-align: right;
+    font-family: monospace;
+}
+.panelNode-ZikulaBugPanel table .summaryRow {
+    background: #BBBBBB !important;
+    font-weight: bold;
+}
+.panelNode-ZikulaBugPanel table .summaryRow > td {
+    border-top: 1px solid #999999;
+    padding-top: 1px;
+    padding-bottom: 2px;
+}
+
+/* Logs view */
+.panelNode-ZikulaBugPanel .logsTable .logType {
+    padding-left: 20px;
+}
+.panelNode-ZikulaBugPanel .logsTable .itemTrace {
+    padding-left: 20px;
+}
+.panelNode-ZikulaBugPanel .logsTable .logsTraceTable {
+    color: #000000;
+    background: #FFFFFF;
+}
+
+/* Tabs for Logs view*/
+.panelNode-ZikulaBugPanel .infoCol {
+    border-top: 1px solid #EEEEEE;
+    background: url(chrome://firebug/skin/group.png) repeat-x -moz-field;
+    border-bottom: 1px solid #D7D7D7;
+}
+.panelNode-ZikulaBugPanel .infoBody {
+    margin: 10px 0 4px 10px;
+}
+.panelNode-ZikulaBugPanel .infoTabs {
+    position: relative;
+    padding-left: 17px;
+}
+.panelNode-ZikulaBugPanel .infoTab {
+    position: relative;
+    top: -3px;
+    margin-top: 10px;
+    padding: 4px 6px;
+    border: 1px solid transparent;
+    border-bottom: none;
+    font-weight: bold;
+    color: -moz-dialogtext;
+}
+.panelNode-ZikulaBugPanel .infoTab:hover {
+    cursor: pointer;
+}
+.panelNode-ZikulaBugPanel .infoTab[selected="true"] {
+    cursor: default !important;
+    border-color: #D7D7D7;
+    -moz-border-radius: 4px 4px 0 0;
+    background-color: window;
+}
+.panelNode-ZikulaBugPanel .infoText {
+/*    display: none;*/
+    margin: 0;
+    border: 1px solid #D7D7D7;
+    border-right: none;
+    padding: 8px;
+    background-color: -moz-field;
+}
+
+/*Sql view*/
+.panelNode-ZikulaBugPanel .sqlTable .queryKeywordBlock,
+.panelNode-ZikulaBugPanel .sqlTable .queryKeywordInline {
+    font-weight: bold;
+    color: #990099;
+}
+.panelNode-ZikulaBugPanel .sqlTable .queryKeywordBlock:nth-child(n+2):before {
+    content: '\A';
+    white-space:pre;
+    height: 1em;
+}
+.panelNode-ZikulaBugPanel .sqlTable .contentRow .tableCellBox {
+    padding: 5px 13px 5px 5px;
+}
+
+/* TEMPORARY */
+
