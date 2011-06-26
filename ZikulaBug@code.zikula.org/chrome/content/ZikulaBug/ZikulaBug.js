@@ -1,7 +1,7 @@
 FBL.ns(function() {
     with (FBL) {
         // namespace
-        var ZikulaBug = {};
+        var ZikulaBug = top.ZikulaBug = {};
         ZikulaBug.Meta = {
             id: 'ZikulaBug@code.zikula.org'
         };
@@ -27,8 +27,31 @@ FBL.ns(function() {
             return Number((Number(number)/divisor).toFixed(1)).toLocaleString() + unit;
         };
         // templates
-//        ZikulaBug.Reps = FirebugReps;
+        ZikulaBug.test = [];
+        ZikulaBug.test.push({test: 'tak'});
+        ZikulaBug.Reps = [];
         ZikulaBug.Tpl = {};
+        ZikulaBug.Tpl.ignoreVars = extend(ignoreVars,{
+            '__className': 1
+        });
+        ZikulaBug.Tpl.getRep = function(object, context)
+        {
+            var type = typeof(object);
+            if (type == 'object' && object instanceof String)
+                type = 'string';
+
+            for (var i = 0; i < ZikulaBug.Reps.length; ++i) {
+                var rep = ZikulaBug.Reps[i];
+                try {
+                    if (rep.supportsObject(object, type, (context?context:Firebug.currentContext) )) {
+                        return rep;
+                    }
+                } catch (exc) {}
+            }
+            // nothing found - use firebug default reps
+            return Firebug.getRep(object);
+        };
+
         ZikulaBug.Tpl.MainTag = domplate({
             tag: DIV({'id': '$id', 'class': 'ZikulaBugWrapper'})
         });
@@ -170,7 +193,7 @@ FBL.ns(function() {
                     }
 
                     for (var name in insecureObject) { // enumeration is safe
-                        if (ignoreVars[name] == 1) { // javascript.options.strict says ignoreVars is undefined.
+                        if (ZikulaBug.Tpl.ignoreVars[name] == 1) { // javascript.options.strict says ignoreVars is undefined.
                             continue;
                         }
 
@@ -260,6 +283,9 @@ FBL.ns(function() {
                 fdump('ZikulaBug.Tpl.VarList.hasProperties');
                 try {
                     for (var name in ob) {
+                        if (ZikulaBug.Tpl.ignoreVars[name] == 1) { // javascript.options.strict says ignoreVars is undefined.
+                            continue;
+                        }
                         return true;
                     }
                 } catch (exc) {}
@@ -269,7 +295,7 @@ FBL.ns(function() {
             {
                 fdump('ZikulaBug.Tpl.VarList.hasChildren');
                 var valueType = typeof(value);
-                var hasChildren =  this.hasProperties(value) && !(value instanceof ErrorCopy) &&
+                var hasChildren = this.hasProperties(value) && !(value instanceof ErrorCopy) &&
                     (valueType == "function" || (valueType == "object" && value != null)
                     || (valueType == "string" && value.length > Firebug.stringCropLength));
                 return hasChildren;
@@ -277,12 +303,12 @@ FBL.ns(function() {
             addVarListMember: function(type, props, name, value, level, order)
             {
                 fdump('ZikulaBug.Tpl.VarList.addVarListMember');
-                var rep = Firebug.getRep(value);    // do this first in case a call to instanceof reveals contents
+                var rep = ZikulaBug.Tpl.getRep(value);    // do this first in case a call to instanceof reveals contents
                 var tag = rep.shortTag ? rep.shortTag : rep.tag;
 
                 var hasChildren = this.hasChildren(value);
 
-                if(rep.className == 'array' && value.length === 0) {
+                if((rep.className == 'array' || rep.className == 'object PHPArray') && value.length === 0) {
                     hasChildren = false;
                 }
 
@@ -317,7 +343,7 @@ FBL.ns(function() {
                         value: value,
                         className: ''
                     },
-                    paramsRep = Firebug.getRep(value);
+                    paramsRep = ZikulaBug.Tpl.getRep(value);
                 object.tag = paramsRep.shortTag ? paramsRep.shortTag : paramsRep.tag;
                 object.hasChildren = this.hasChildren(value);
                 return object;
@@ -348,7 +374,7 @@ FBL.ns(function() {
                 var toggler = getChildByClass(row,'zkOpener');
                     objElement = getChildByClass(row,'varTag');
                     obj = objElement.repObject || row.item.value;
-                var rep = Firebug.getRep(obj);
+                var rep = ZikulaBug.Tpl.getRep(obj);
                 if (!hasClass(toggler, 'opened')) {
                     removeClass(toggler, 'closed');
                     setClass(toggler, 'opened');
@@ -814,6 +840,7 @@ FBL.ns(function() {
                 }
                 this.panelNode.innerHTML = '';
                 dump('this.panelNode', this.panelNode);
+                dump('ZikulaBug.test', ZikulaBug.test);
                 this['display' + this.activeView]();
             },
             displayGeneral: function(){

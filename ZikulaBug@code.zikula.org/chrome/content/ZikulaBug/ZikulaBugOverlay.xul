@@ -7,7 +7,7 @@
     <script type="application/x-javascript"
             src="chrome://ZikulaBug/content/ZikulaBug.js"/> 
     <script type="application/x-javascript"
-            src="chrome://ZikulaBug/content/jquery-1.2.6.pack.js"/> 
+            src="chrome://ZikulaBug/content/ZikulaBugReps.js"/> 
     <commandset id="mainCommandSet"> 
         <command id="cmd_ZikulaBugGeneral" oncommand="Firebug.ZikulaBugModel.setActiveView(FirebugContext, 'General')"/>
         <command id="cmd_ZikulaBugConfig" oncommand="Firebug.ZikulaBugModel.setActiveView(FirebugContext, 'Config')"/>
