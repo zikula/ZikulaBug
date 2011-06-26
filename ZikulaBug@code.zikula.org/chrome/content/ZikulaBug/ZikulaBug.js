@@ -27,8 +27,6 @@ FBL.ns(function() {
             return Number((Number(number)/divisor).toFixed(1)).toLocaleString() + unit;
         };
         // templates
-        ZikulaBug.test = [];
-        ZikulaBug.test.push({test: 'tak'});
         ZikulaBug.Reps = [];
         ZikulaBug.Tpl = {};
         ZikulaBug.Tpl.ignoreVars = extend(ignoreVars,{
@@ -85,7 +83,9 @@ FBL.ns(function() {
             varListContentRow: TR({"class": "memberRow $member.open $member.type\\Row", $hasChildren: "$member.hasChildren",
                 level: "$member.level", _domObject: "$member"},
                 TD({"class": "memberLabelCell", style: "padding-left: $member.indent\\px"},
-                    DIV({"class": "memberLabel $member.type\\Label"}, "$member.name")
+                    DIV({"class": "memberLabel $member.type\\Label"}, 
+                        TAG('$member.nameTag', {object:"$member.name"})
+                    )
                 ),
                 TD({"class": "memberValueCell"},
                     TAG("$member.tag", {object: "$member.value"})
@@ -207,22 +207,22 @@ FBL.ns(function() {
                         var ordinal = parseInt(name);
 
                         if (ordinal || ordinal == 0) {
-                            this.addVarListMember("ordinal", ordinals, name, val, level);
+                            this.addVarListMember("ordinal", ordinals, name, val, level, insecureObject);
                         } else if (typeof(val) == "function") {
                             if (this.isClassFunction(val)) {
-                                this.addVarListMember("userClass", userClasses, name, val, level);
+                                this.addVarListMember("userClass", userClasses, name, val, level, insecureObject);
                             } else if (name in domMembers) {
-                                this.addVarListMember("domFunction", domFuncs, name, val, level, domMembers[name]);
+                                this.addVarListMember("domFunction", domFuncs, name, val, level, domMembers[name], insecureObject);
                             } else {
-                                this.addVarListMember("userFunction", userFuncs, name, val, level);
+                                this.addVarListMember("userFunction", userFuncs, name, val, level, insecureObject);
                             }
                         } else {
                             if (name in domMembers) {
-                                this.addVarListMember("dom", domProps, name, val, level, domMembers[name]);
+                                this.addVarListMember("dom", domProps, name, val, level, domMembers[name], insecureObject);
                             } else if (name in domConstantMap) {
-                                this.addVarListMember("dom", domConstants, name, val, level);
+                                this.addVarListMember("dom", domConstants, name, val, level, insecureObject);
                             } else {
-                                this.addVarListMember("user", userProps, name, val, level);
+                                this.addVarListMember("user", userProps, name, val, level, insecureObject);
                             }
                         }
                     }
@@ -300,11 +300,14 @@ FBL.ns(function() {
                     || (valueType == "string" && value.length > Firebug.stringCropLength));
                 return hasChildren;
             },
-            addVarListMember: function(type, props, name, value, level, order)
+            addVarListMember: function(type, props, name, value, level, parent)
             {
+//                dump('ZikulaBug.Tpl.VarList.addVarListMember', value, parent, typeof(parent));
                 fdump('ZikulaBug.Tpl.VarList.addVarListMember');
                 var rep = ZikulaBug.Tpl.getRep(value);    // do this first in case a call to instanceof reveals contents
                 var tag = rep.shortTag ? rep.shortTag : rep.tag;
+                var parentRep = ZikulaBug.Tpl.getRep(parent);
+                var nameTag = parentRep.keyTag;
 
                 var hasChildren = this.hasChildren(value);
 
@@ -313,12 +316,12 @@ FBL.ns(function() {
                 }
 
                 props.push({
-                        name: name,
+                        name: name,// tutaj muszę poprawnie dekodować klucze
+                        nameTag: nameTag,
                         value: value,
                         type: type,
                         rowClass: "memberRow-"+type,
                         open: "closed",
-                        order: order,
                         level: level,
                         indent: level*16,
                         hasChildren: hasChildren,
@@ -840,7 +843,6 @@ FBL.ns(function() {
                 }
                 this.panelNode.innerHTML = '';
                 dump('this.panelNode', this.panelNode);
-                dump('ZikulaBug.test', ZikulaBug.test);
                 this['display' + this.activeView]();
             },
             displayGeneral: function(){

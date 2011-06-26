@@ -5,6 +5,7 @@ FBL.ns(function() {
         var OBJECTBLOCK = FirebugReps.OBJECTBLOCK;
         var OBJECTLINK = FirebugReps.OBJECTLINK;
         ZikulaBug.Tpl.Reps.StringMaxLenght = 40;
+        ZikulaBug.Tpl.Reps.ObjectShortIteratorMax = 2;
         ZikulaBug.Tpl.Reps.PHPString = domplate(Firebug.Rep,
         {
             tag: OBJECTBOX('&quot;$object&quot;'),
@@ -47,7 +48,7 @@ FBL.ns(function() {
                 SPAN({'class': 'objectTitle'}, '$object|getClassName Object '),
                 SPAN({'class': 'objectLeftBrace', role: 'presentation'}, '('),
                 FOR('prop', '$object|shortPropIterator',
-                    ' $prop.name',
+                    ' $prop.name|getPropName',
                     SPAN({'class': 'objectEqual', role: 'presentation'}, '$prop.equal'),
                     TAG('$prop.tag', {object: '$prop.object'}),
                     SPAN({'class': 'objectComma', role: 'presentation'}, '$prop.delim')
@@ -59,7 +60,7 @@ FBL.ns(function() {
                 SPAN({'class': 'objectTitle'}, '$object|getClassName Object '),
                 SPAN({'class': 'objectLeftBrace', role: 'presentation'}, '('),
                 FOR('prop', '$object|shortPropIterator',
-                    ' $prop.name',
+                    ' $prop.name|getPropName',
                     SPAN({'class': 'objectEqual', role: 'presentation'}, '$prop.equal'),
                     TAG('$prop.tag', {object: '$prop.object'}),
                     SPAN({'class': 'objectComma', role: 'presentation'}, '$prop.delim')
@@ -68,6 +69,8 @@ FBL.ns(function() {
             ),
 
             titleTag: SPAN({'class': 'objectTitle'}, '$object|getTitleTag'),
+
+            keyTag: SPAN({'class': 'classProperty $object|getPropType', title: '$object|getPropType'}, "$object|getPropName"),
 
             getClassName: function(object)
             {
@@ -87,6 +90,16 @@ FBL.ns(function() {
                 }
                 return title;
             },
+            getPropName: function(name)
+            {
+                name = name.split(':');
+                return name[1] || name[0];
+            },
+            getPropType: function(name)
+            {
+                name = name.split(':');
+                return name.length == 2 ? name[0] : '';
+            },
 
             longPropIterator: function (object)
             {
@@ -95,7 +108,7 @@ FBL.ns(function() {
 
             shortPropIterator: function (object)
             {
-                return this.propIterator(object, Firebug.ObjectShortIteratorMax);
+                return this.propIterator(object, ZikulaBug.Tpl.Reps.ObjectShortIteratorMax);
             },
 
             propIterator: function (object, max)
@@ -177,8 +190,8 @@ FBL.ns(function() {
                 SPAN({'class': 'objectTitle'}, 'array '),
                 SPAN({'class': 'objectLeftBrace', role: 'presentation'}, '('),
                 FOR('prop', '$object|shortPropIterator',
-                    ' $prop.name',
-//                        SPAN({'class': 'objectBox-string', role : 'presentation'},' [$prop.name]'),
+//                    '$prop.name|itemKey',
+                    SPAN({'class': 'objectBox-string', role : 'presentation'},'$prop.name|itemKey'),
                     SPAN({'class': 'objectEqual', role: 'presentation'}, '$prop.equal'),
                     TAG('$prop.tag', {object: '$prop.object'}),
                     SPAN({'class': 'objectComma', role: 'presentation'}, '$prop.delim')
@@ -190,8 +203,8 @@ FBL.ns(function() {
                 SPAN({'class': 'objectTitle'}, 'array '),
                 SPAN({'class': 'objectLeftBrace', role: 'presentation'}, '('),
                 FOR('prop', '$object|shortPropIterator',
-                    ' $prop.name',
-//                        SPAN({'class': 'objectBox-string', role : 'presentation'},' [$prop.name]'),
+//                    '$prop.name|itemKey',
+                    SPAN({'class': 'objectBox-string', role : 'presentation'},'$prop.name|itemKey'),
                     SPAN({'class': 'objectEqual', role: 'presentation'}, '$prop.equal'),
                     TAG('$prop.tag', {object: '$prop.object'}),
                     SPAN({'class': 'objectComma', role: 'presentation'}, '$prop.delim')
@@ -199,21 +212,23 @@ FBL.ns(function() {
                 SPAN({'class': 'objectRightBrace'}, ')')
             ),
 
-            titleTag: SPAN({'class': 'objectTitle'}, 'array'),
+            titleTag: SPAN({'class': 'objectTitle', title: '$object|itemsCount'}, '$object|getTitleTag'),
+//            titleTag: SPAN({'class': 'objectTitle'}, 'array()'),
+
+            keyTag: SPAN({'class': 'objectBox-string', role : 'presentation'},'$object|itemKey'),
+//            keyTag: SPAN('$object|itemKey =>'),
 
             getTitleTag: function(object)
             {
-                var title;
-                if (typeof(object) == 'string') {
-                    title = object;
-                } else {
-                    title = this.getTitle(object);
-                }
-
-                if (title == 'Object') {
-                    title = '{...}';
-                }
-                return title;
+                return Object.keys(object).length > 0 ? 'array(...)' : 'array()';
+            },
+            itemsCount: function(object)
+            {
+                return Object.keys(object).length + ' elements';
+            },
+            itemKey: function(name)
+            {
+                return name ? '[' + name + ']' : '';
             },
 
             longPropIterator: function (object)
@@ -223,7 +238,7 @@ FBL.ns(function() {
 
             shortPropIterator: function (object)
             {
-                return this.propIterator(object, Firebug.ObjectShortIteratorMax);
+                return this.propIterator(object, ZikulaBug.Tpl.Reps.ObjectShortIteratorMax);
             },
 
             propIterator: function (object, max)
@@ -254,7 +269,7 @@ FBL.ns(function() {
                             var rep = ZikulaBug.Tpl.getRep(value);
                             var tag = rep.shortTag || rep.tag;
                             if (t == 'object') {
-                                value = rep.getTitle(value);
+//                                value = rep.getTitle(value);
                                 if (rep.titleTag) {
                                     tag = rep.titleTag;
                                 } else {
