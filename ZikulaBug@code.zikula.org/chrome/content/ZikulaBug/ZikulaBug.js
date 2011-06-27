@@ -368,9 +368,10 @@ FBL.ns(function() {
                 cancelEvent(event);
                 var row = getAncestorByClass(event.target, 'varCotnainer'),
                     toggler = getChildByClass(row,'zkOpener');
-                if (!hasClass(toggler, 'opened')) {
-                    this.toggleVarRow(row);
-                }
+                this.toggleVarRow(row);
+//                if (!hasClass(toggler, 'opened')) {
+//                    this.toggleVarRow(row);
+//                }
             },
             toggleVarRow: function(row)
             {
@@ -384,7 +385,8 @@ FBL.ns(function() {
                     if (typeof(obj) == 'string') {
                         this.varRep.replace({tag: rep.tag, value: obj}, objElement)
                     } else {
-                        this.varListTag.replace({object: obj}, objElement)
+//                        this.varListTag.replace({object: obj}, objElement)
+                        this.varListTag.append({object: obj}, objElement)
                     }
                 } else {
                     removeClass(toggler, 'opened');
@@ -491,6 +493,7 @@ FBL.ns(function() {
                     tagsInline = ['AS', 'IN', 'ON', 'AND', 'OR'];
 
                 for (var i = 0, limit = queryArr.length; i < limit; i++) {
+                    if (!queryArr[i]) continue;
                     var item = {
                         content: queryArr[i],
                         className: ''
