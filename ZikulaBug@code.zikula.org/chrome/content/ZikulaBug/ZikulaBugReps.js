@@ -311,6 +311,8 @@ FBL.ns(function() {
 
             supportsObject: function(object, type)
             {
+//                dump('array',object, type);
+                return type == 'object';
                 return true;
             }
         });
