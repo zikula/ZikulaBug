@@ -712,6 +712,7 @@ FBL.ns(function() {
                     } else if (item.trace && item.trace[2]) {
                         item.where = item.trace[2].file + ':' + item.trace[2].line;
                     }
+                    item.where = item.where.replace(ZikulaBug.Meta.realpath,'');
                     switch(item.type) {
                         case 0:
                             item.className = 'logRow-errorMessage typeEmergency';
@@ -764,6 +765,7 @@ FBL.ns(function() {
                     if (item.file && item.line) {
                         item.where = item.file + ':' + item.line;
                     }
+                    item.where = item.where.replace(ZikulaBug.Meta.realpath,'');
                     item.name = item['class'] ? item['class'] + item.type + item['function'] : item['function'];
                     members.push(item);
                 }
@@ -815,6 +817,7 @@ FBL.ns(function() {
                         renderTime: this.data.rendertime.content,
                         sqlCount: this.data.sql.content.length
                     };
+                    ZikulaBug.Meta.realpath = this.data.__meta.realpath;
                     this.data.meta.sqlTime = 0;
                     for (var i = 0, limit = this.data.sql.content.length; i < limit; i++){
                         this.data.meta.sqlTime += this.data.sql.content[i].time;
