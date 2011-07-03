@@ -4,7 +4,7 @@ FBL.ns(function() {
         var OBJECTBOX = FirebugReps.OBJECTBOX;
         var OBJECTBLOCK = FirebugReps.OBJECTBLOCK;
         var OBJECTLINK = FirebugReps.OBJECTLINK;
-        ZikulaBug.Tpl.Reps.StringMaxLenght = 40;
+        ZikulaBug.Tpl.Reps.StringMaxLenght = 50;
         ZikulaBug.Tpl.Reps.ObjectShortIteratorMax = 2;
         ZikulaBug.Tpl.Reps.PHPString = domplate(Firebug.Rep,
         {
