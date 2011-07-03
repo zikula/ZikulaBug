@@ -30,7 +30,7 @@ FBL.ns(function() {
         ZikulaBug.Reps = [];
         ZikulaBug.Tpl = {};
         ZikulaBug.Tpl.ignoreVars = extend(ignoreVars,{
-            '__className': 1
+            '__phpClassName': 1
         });
         ZikulaBug.Tpl.getRep = function(object, context)
         {
@@ -120,7 +120,7 @@ FBL.ns(function() {
 
                     if (isString) {
                         var rowValue = row.domObject.value
-                        row.lastChild.firstChild.textContent = '"' + cropMultipleLines(rowValue) + '"';
+                        row.lastChild.firstChild.textContent = '"' + cropMultipleLines(rowValue, ZikulaBug.Tpl.Reps.StringMaxLenght) + '"';
                     } else {
                         var rowTag = this.varListRowTag;
                         var tbody = row.parentNode;
@@ -297,7 +297,7 @@ FBL.ns(function() {
                 var valueType = typeof(value);
                 var hasChildren = this.hasProperties(value) && !(value instanceof ErrorCopy) &&
                     (valueType == "function" || (valueType == "object" && value != null)
-                    || (valueType == "string" && value.length > Firebug.stringCropLength));
+                    || (valueType == "string" && value.length > ZikulaBug.Tpl.Reps.StringMaxLenght));
                 return hasChildren;
             },
             addVarListMember: function(type, props, name, value, level, parent)

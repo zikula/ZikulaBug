@@ -74,7 +74,7 @@ FBL.ns(function() {
 
             getClassName: function(object)
             {
-                return object.__className;
+                return object.__phpClassName;
             },
             getTitleTag: function(object)
             {
@@ -181,7 +181,7 @@ FBL.ns(function() {
 
             supportsObject: function(object, type)
             {
-                return object && object.__className;
+                return object && object.__phpClassName;
             }
         });
         ZikulaBug.Tpl.Reps.PHPArray = domplate(Firebug.Rep,
