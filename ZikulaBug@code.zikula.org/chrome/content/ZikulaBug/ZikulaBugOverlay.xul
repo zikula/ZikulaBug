@@ -15,6 +15,7 @@
         <command id="cmd_ZikulaBugView" oncommand="Firebug.ZikulaBugModel.setActiveView(FirebugContext, 'View')"/>
         <command id="cmd_ZikulaBugExec" oncommand="Firebug.ZikulaBugModel.setActiveView(FirebugContext, 'Exec')"/>
         <command id="cmd_ZikulaBugLogs" oncommand="Firebug.ZikulaBugModel.setActiveView(FirebugContext, 'Logs')"/>
+        <command id="cmd_ZikulaBugSettings" oncommand="Firebug.ZikulaBugModel.setActiveView(FirebugContext, 'Settings')"/>
     </commandset> 
     
     <toolbar id="fbToolbar" align="center"> 
@@ -46,6 +47,11 @@
                                 tooltiptext="Log console"
                                 class="toolbar-text-button" group="ZikulaBug"
                                 command="cmd_ZikulaBugLogs"/>
+               <toolbarseparator/>
+               <toolbarbutton id="fbZikulaBug-Settings" label="Settings" type="radio"
+                                tooltiptext="Settings"
+                                class="toolbar-text-button" group="ZikulaBug"
+                                command="cmd_ZikulaBugSettings"/>
             </hbox> 
         </hbox> 
 

@@ -141,4 +141,24 @@
 }
 
 /* TEMPORARY */
+.panelNode-ZikulaBugPanel input {
+    border: 1px solid #0096C0;
+    font-family: Monaco, monospace;
+    font-size: inherit;
+}
+.panelNode-ZikulaBugPanel button.save,
+.panelNode-ZikulaBugPanel button.delete {
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    padding-left: 20px;
+}
+.panelNode-ZikulaBugPanel button.save {
+    background-image: url(chrome://ZikulaBug/skin/filesave.png);
+}
+.panelNode-ZikulaBugPanel button.delete {
+    background-image: url(chrome://ZikulaBug/skin/editdelete.png);
+}
 
+.currentHost {
+    outline: 2px solid red;
+}
