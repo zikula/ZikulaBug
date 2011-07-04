@@ -586,6 +586,8 @@ FBL.ns(function() {
             getMembers: function(object)
             {
                 fdump('ZikulaBug.Tpl.Exec.getMembers');
+                dump(this);
+                dump(Firebug.ZikulaBugModel.getPanel());
                 var members = [];
                 
                 for (var i = 0, limit = object.length; i < limit; i++){
@@ -805,11 +807,19 @@ FBL.ns(function() {
             activeView: 'General',
 
 //            getContextMenuItems: function(node, target){},
+            getWrappedData: function(key) {
+                key = key ? key.split('.') : ['Zikula'];
+                var x = this.context.window.wrappedJSObject;
+                for (var i=0, limit=key.length; i<limit; i++) {
+                        x = x[key[i]] || null;
+                        if (!x) return x;
+                    }
+                return x;
+            },
             loadData: function(){
                 fdump('ZikulaBug.Panel.loadData');
-                if (typeof this.context.window.wrappedJSObject.Zikula != 'undefined'
-                    && typeof this.context.window.wrappedJSObject.Zikula.DebugToolbarData != 'undefined') {
-                    this.data = this.context.window.wrappedJSObject.Zikula.DebugToolbarData;
+                this.data = this.getWrappedData('Zikula.DebugToolbarData');
+                if (this.data) {
                     this.data.meta = {
                         version: this.data.version.content,
                         addonVersion: ZikulaBug.Meta.version,
@@ -818,6 +828,7 @@ FBL.ns(function() {
                         sqlCount: this.data.sql.content.length
                     };
                     ZikulaBug.Meta.realpath = this.data.__meta.realpath;
+                    ZikulaBug.Meta.baseURL = this.getWrappedData('Zikula.Config.baseURL');
                     this.data.meta.sqlTime = 0;
                     for (var i = 0, limit = this.data.sql.content.length; i < limit; i++){
                         this.data.meta.sqlTime += this.data.sql.content[i].time;
