@@ -26,6 +26,29 @@ FBL.ns(function() {
             }
             return Number((Number(number)/divisor).toFixed(1)).toLocaleString() + unit;
         };
+        ZikulaBug.Util.getHost = function(url)
+        {
+            return url.replace(/(https?:\/\/(www\.)?)/i,'');
+        };
+        ZikulaBug.Util.getPrefs = function(key) {
+            if (!key) {
+                return null;
+            }
+            var pref = Firebug.getPref(Firebug.prefDomain, 'ZikulaBugPanel.' + key);
+            try {
+                pref = JSON.parse(pref);
+            } catch (e) {}
+            return pref;
+        };
+        ZikulaBug.Util.setPrefs = function(key, value) {
+            if (!key) {
+                return null;
+            }
+            if (['string', 'boolean', 'number'].indexOf(typeof(value)) < 0) {
+                value = JSON.stringify(value)
+            }
+            return Firebug.setPref(Firebug.prefDomain, 'ZikulaBugPanel.' + key, value);
+        };
         // templates
         ZikulaBug.Reps = [];
         ZikulaBug.Tpl = {};
@@ -796,7 +819,7 @@ FBL.ns(function() {
         });
 
         // Template for Settings view
-        ZikulaBug.Tpl.Settings = domplate({
+        ZikulaBug.Tpl.Settings = domplate(ZikulaBug.Util,{
             tag: DIV(
                 H1('h1 test'),
                 P('lorem ipsum'),
@@ -836,27 +859,23 @@ FBL.ns(function() {
                 }
                 return items;
             },
-            getHost: function(url)
-            {
-                return url.replace(/(https?:\/\/(www\.)?)/i,'');
-            },
             savePref: function(event)
             {
                 cancelEvent(event);
                 var row = getAncestorByClass(event.target, 'definitionValue'),
                     input = getChildByClass(row,'prefValue'),
-                    prefs = Firebug.ZikulaBugModel.getPrefs('secKey') || {};
+                    prefs = this.getPrefs('secKey') || {};
                 prefs[input.name] = input.value;
-                Firebug.ZikulaBugModel.setPrefs('secKey', prefs);
+                this.setPrefs('secKey', prefs);
             },
             deletePref: function(event)
             {
                 cancelEvent(event);
                 var row = getAncestorByClass(event.target, 'definitionValue'),
                     input = getChildByClass(row,'prefValue'),
-                    prefs = Firebug.ZikulaBugModel.getPrefs('secKey') || {};
+                    prefs = this.getPrefs('secKey') || {};
                 prefs[input.name] = '';
-                Firebug.ZikulaBugModel.setPrefs('secKey', prefs);
+                this.setPrefs('secKey', prefs);
                 input.value = '';
             }
         });
@@ -966,7 +985,7 @@ FBL.ns(function() {
             },
             displaySettings: function(){
                 fdump('ZikulaBug.Panel.displaySettings');
-                var data = Firebug.ZikulaBugModel.getPrefs('secKey') || {};
+                var data = ZikulaBug.Util.getPrefs('secKey') || {};
                 var body = this.getBody('general', 'Settings');
                 ZikulaBug.Tpl.Settings.tag.append({data: data}, body, null);
             },
@@ -1011,25 +1030,6 @@ FBL.ns(function() {
                 }
                 this.getPanel(context).activeView = view;
                 this.getPanel(context).display();
-            },
-            getPrefs: function(key) {
-                if (!key) {
-                    return null;
-                }
-                var pref = Firebug.getPref(Firebug.prefDomain, 'ZikulaBugPanel.' + key);
-                try {
-                    pref = JSON.parse(pref);
-                } catch (e) {}
-                return pref;
-            },
-            setPrefs: function(key, value) {
-                if (!key) {
-                    return null;
-                }
-                if (['string', 'boolean', 'number'].indexOf(typeof(value)) < 0) {
-                    value = JSON.stringify(value)
-                }
-                return Firebug.setPref(Firebug.prefDomain, 'ZikulaBugPanel.' + key, value);
             }
         });
 
