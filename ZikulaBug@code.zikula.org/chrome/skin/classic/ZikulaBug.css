@@ -141,24 +141,42 @@
 }
 
 /* TEMPORARY */
-.panelNode-ZikulaBugPanel input {
+.panelNode-ZikulaBugPanel #settings p {
+    margin: 0;
+    padding: 0.67em 0;
+}
+.panelNode-ZikulaBugPanel #settings input {
     border: 1px solid #0096C0;
     font-family: Monaco, monospace;
     font-size: inherit;
+    width: 200px;
 }
-.panelNode-ZikulaBugPanel button.save,
-.panelNode-ZikulaBugPanel button.delete {
+.panelNode-ZikulaBugPanel #settings  .save,
+.panelNode-ZikulaBugPanel #settings  .delete {
     background-position: 0 0;
     background-repeat: no-repeat;
     padding-left: 20px;
+    padding-bottom: 5px;
+    margin: 0 10px;
 }
-.panelNode-ZikulaBugPanel button.save {
+.panelNode-ZikulaBugPanel #settings  .save {
     background-image: url(chrome://ZikulaBug/skin/filesave.png);
 }
-.panelNode-ZikulaBugPanel button.delete {
+.panelNode-ZikulaBugPanel #settings  .delete {
     background-image: url(chrome://ZikulaBug/skin/editdelete.png);
 }
-
-.currentHost {
-    outline: 2px solid red;
+.panelNode-ZikulaBugPanel #settings  .otherHosts.closed .otherHostsInner {
+    display: none;
+}
+.panelNode-ZikulaBugPanel #settings  .otherHosts .controlls .showOtherHosts,
+.panelNode-ZikulaBugPanel #settings  .otherHosts .controlls .hideOtherHosts {
+    cursor: pointer;
+}
+.panelNode-ZikulaBugPanel #settings  .otherHosts.closed .controlls .showOtherHosts,
+.panelNode-ZikulaBugPanel #settings  .otherHosts .controlls .hideOtherHosts {
+    display: block;
+}
+.panelNode-ZikulaBugPanel #settings  .otherHosts .controlls .showOtherHosts,
+.panelNode-ZikulaBugPanel #settings  .otherHosts.closed .controlls .hideOtherHosts {
+    display: none;
 }

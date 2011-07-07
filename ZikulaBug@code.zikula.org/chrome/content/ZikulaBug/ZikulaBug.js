@@ -821,19 +821,28 @@ FBL.ns(function() {
         // Template for Settings view
         ZikulaBug.Tpl.Settings = domplate(ZikulaBug.Util,{
             tag: DIV(
-                H1('h1 test'),
-                P('lorem ipsum'),
+                P('Here you can define secKeys for individual sites.'),
                 TAG('$itemRow', {item: '$data|getCurrentItem', className: 'currentHost'}),
-                FOR('item', '$data|getItems',
-                    TAG('$itemRow', {item: '$item', className: 'otherHost'})
+                DIV({'class': 'otherHosts closed'},
+                    DIV({'class':'controlls'},
+                        A({'class': 'showOtherHosts', onclick:'$toggleRow'}, 'Show other hosts'),
+                        A({'class': 'hideOtherHosts', onclick:'$toggleRow'}, 'Hide other hosts')
+                    ),
+                    DIV({'class': 'otherHostsInner'},
+                        FOR('item', '$data|getItems',
+                            TAG('$itemRow', {item: '$item', className: 'otherHost'})
+                        )
+                    )
                 )
             ),
             itemRow: DIV({'class': 'definitionRow $className'},
                 DIV({'class': 'definitionLabel'}, '$item.name'),
                 DIV({'class': 'definitionValue'}, 
                     INPUT({type: 'text', 'class': 'prefValue', name: '$item.name', value: '$item.value'}),
-                    BUTTON({type: 'submit', 'class': 'save', onclick: '$savePref'}, 'zapisz'),
-                    BUTTON({type: 'submit', 'class': 'delete', onclick: '$deletePref'}, 'usun')
+//                    BUTTON({type: 'submit', 'class': 'save', onclick: '$savePref'}, 'zapisz'),
+//                    BUTTON({type: 'submit', 'class': 'delete', onclick: '$deletePref'}, 'usun')
+                    A({'class': 'save', onclick: '$savePref'}, 'Save'),
+                    A({'class': 'delete', onclick: '$deletePref'}, 'Clear')
                 )
             ),
             getCurrentItem: function(data)
@@ -858,6 +867,12 @@ FBL.ns(function() {
                     items.push(obj);
                 }
                 return items;
+            },
+            toggleRow: function(event)
+            {
+                var parent = getAncestorByClass(event.target, 'otherHosts'),
+                    row = getChildByClass(parent, 'otherHostsInner');
+                toggleClass(parent, 'closed')
             },
             savePref: function(event)
             {
@@ -986,7 +1001,7 @@ FBL.ns(function() {
             displaySettings: function(){
                 fdump('ZikulaBug.Panel.displaySettings');
                 var data = ZikulaBug.Util.getPrefs('secKey') || {};
-                var body = this.getBody('general', 'Settings');
+                var body = this.getBody('settings', 'Settings');
                 ZikulaBug.Tpl.Settings.tag.append({data: data}, body, null);
             },
             displayNullInfo: function(){
