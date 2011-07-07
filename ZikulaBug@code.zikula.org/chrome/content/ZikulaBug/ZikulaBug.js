@@ -841,8 +841,9 @@ FBL.ns(function() {
                     INPUT({type: 'text', 'class': 'prefValue', name: '$item.name', value: '$item.value'}),
 //                    BUTTON({type: 'submit', 'class': 'save', onclick: '$savePref'}, 'zapisz'),
 //                    BUTTON({type: 'submit', 'class': 'delete', onclick: '$deletePref'}, 'usun')
-                    A({'class': 'save', onclick: '$savePref'}, 'Save'),
-                    A({'class': 'delete', onclick: '$deletePref'}, 'Clear')
+                    A({'class': 'settingsControll save', onclick: '$savePref'}, 'Save'),
+                    A({'class': 'settingsControll clear', onclick: '$clearPref'}, 'Clear'),
+                    A({'class': 'settingsControll delete', onclick: '$deletePref'}, 'Delete')
                 )
             ),
             getCurrentItem: function(data)
@@ -883,7 +884,7 @@ FBL.ns(function() {
                 prefs[input.name] = input.value;
                 this.setPrefs('secKey', prefs);
             },
-            deletePref: function(event)
+            clearPref: function(event)
             {
                 cancelEvent(event);
                 var row = getAncestorByClass(event.target, 'definitionValue'),
@@ -892,6 +893,17 @@ FBL.ns(function() {
                 prefs[input.name] = '';
                 this.setPrefs('secKey', prefs);
                 input.value = '';
+            },
+            deletePref: function(event)
+            {
+                cancelEvent(event);
+                var row = getAncestorByClass(event.target, 'definitionValue'),
+                    input = getChildByClass(row,'prefValue'),
+                    definitionRow = getAncestorByClass(row, 'definitionRow'),
+                    prefs = this.getPrefs('secKey') || {};
+                delete prefs[input.name];
+                this.setPrefs('secKey', prefs);
+                definitionRow.parentNode.removeChild(definitionRow);
             }
         });
 
