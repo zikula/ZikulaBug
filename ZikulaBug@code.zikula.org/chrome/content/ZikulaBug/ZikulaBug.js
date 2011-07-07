@@ -3,7 +3,7 @@ FBL.ns(function() {
         // namespace
         var ZikulaBug = top.ZikulaBug = {};
         ZikulaBug.Meta = {
-            id: 'ZikulaBug@code.zikula.org'
+            id: 'ZikulaBug@code.zikula.org',
         };
         Components.utils['import']('resource://gre/modules/AddonManager.jsm');
         AddonManager.getAddonByID(ZikulaBug.Meta.id, function(addon) {
@@ -822,7 +822,7 @@ FBL.ns(function() {
         ZikulaBug.Tpl.Settings = domplate(ZikulaBug.Util,{
             tag: DIV(
                 P('Here you can define secKeys for individual sites.'),
-                TAG('$itemRow', {item: '$data|getCurrentItem', className: 'currentHost'}),
+                TAG('$data|getCurrentItemTag', {item: '$data|getCurrentItem', className: 'currentHost'}),
                 DIV({'class': 'otherHosts closed'},
                     DIV({'class':'controlls'},
                         A({'class': 'showOtherHosts', onclick:'$toggleRow'}, 'Show other hosts'),
@@ -839,13 +839,20 @@ FBL.ns(function() {
                 DIV({'class': 'definitionLabel'}, '$item.name'),
                 DIV({'class': 'definitionValue'}, 
                     INPUT({type: 'text', 'class': 'prefValue', name: '$item.name', value: '$item.value'}),
-//                    BUTTON({type: 'submit', 'class': 'save', onclick: '$savePref'}, 'zapisz'),
-//                    BUTTON({type: 'submit', 'class': 'delete', onclick: '$deletePref'}, 'usun')
                     A({'class': 'settingsControll save', onclick: '$savePref'}, 'Save'),
                     A({'class': 'settingsControll clear', onclick: '$clearPref'}, 'Clear'),
                     A({'class': 'settingsControll delete', onclick: '$deletePref'}, 'Delete')
                 )
             ),
+            emptyRow: DIV(''),
+            getCurrentItemTag: function()
+            {
+                if (ZikulaBug.Meta.baseURL) {
+                    return this.itemRow;
+                } else {
+                    return this.emptyRow;
+                }
+            },
             getCurrentItem: function(data)
             {
                 return {
@@ -930,7 +937,7 @@ FBL.ns(function() {
             },
             loadData: function(){
                 fdump('ZikulaBug.Panel.loadData');
-                ZikulaBug.Meta.baseURL = this.getWrappedData('Zikula.Config.baseURL');
+                ZikulaBug.Meta.baseURL = this.getWrappedData('Zikula.Config.baseURL') || '';
                 this.data = this.getWrappedData('Zikula.DebugToolbarData');
                 if (this.data) {
                     this.data.meta = {
