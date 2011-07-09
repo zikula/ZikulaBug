@@ -3,7 +3,7 @@ FBL.ns(function() {
         // namespace
         var ZikulaBug = top.ZikulaBug = {};
         ZikulaBug.Meta = {
-            id: 'ZikulaBug@code.zikula.org',
+            id: 'ZikulaBug@code.zikula.org'
         };
         Components.utils['import']('resource://gre/modules/AddonManager.jsm');
         AddonManager.getAddonByID(ZikulaBug.Meta.id, function(addon) {
@@ -48,6 +48,11 @@ FBL.ns(function() {
                 value = JSON.stringify(value)
             }
             return Firebug.setPref(Firebug.prefDomain, 'ZikulaBugPanel.' + key, value);
+        };
+        ZikulaBug.Util.getPanel = function(context) {
+            fdump('ZikulaBugModel.getPanel');
+            context = context || FirebugContext;
+            return context.getPanel('ZikulaBugPanel');
         };
         // templates
         ZikulaBug.Reps = [];
@@ -325,7 +330,6 @@ FBL.ns(function() {
             },
             addVarListMember: function(type, props, name, value, level, parent)
             {
-//                dump('ZikulaBug.Tpl.VarList.addVarListMember', value, parent, typeof(parent));
                 fdump('ZikulaBug.Tpl.VarList.addVarListMember');
                 var rep = ZikulaBug.Tpl.getRep(value);    // do this first in case a call to instanceof reveals contents
                 var tag = rep.shortTag ? rep.shortTag : rep.tag;
@@ -467,7 +471,7 @@ FBL.ns(function() {
                         )
                     )
                 ),
-                TAG('$data|getBody', {'data':'$data', 'meta': '$meta'})
+                TAG('$data|getBody', {'data':'$data', 'general': '$general'})
             ),
             tableBody: TBODY(
                 FOR('item', '$data',
@@ -486,10 +490,10 @@ FBL.ns(function() {
                 ),
                 TR({'class': 'summaryRow'},
                     TD({'class': 'tableCell queryStr'}, 
-                        DIV({'class': 'tableCellBox'}, '$meta.sqlCount queries')
+                        DIV({'class': 'tableCellBox'}, '$general.sqlCount queries')
                     ),
                     TD({'class': 'tableCell queryTime dataNum'}, 
-                        DIV({'class': 'tableCellBox'},'$meta.sqlTime|parseTime')
+                        DIV({'class': 'tableCellBox'},'$general.sqlTime|parseTime')
                     )
                 )
             ),
@@ -609,8 +613,6 @@ FBL.ns(function() {
             getMembers: function(object)
             {
                 fdump('ZikulaBug.Tpl.Exec.getMembers');
-                dump(this);
-                dump(Firebug.ZikulaBugModel.getPanel());
                 var members = [];
                 
                 for (var i = 0, limit = object.length; i < limit; i++){
@@ -625,7 +627,7 @@ FBL.ns(function() {
         });
 
         // Template for Logs view
-        ZikulaBug.Tpl.Logs = domplate(ZikulaBug.Tpl.Var,{
+        ZikulaBug.Tpl.Logs = domplate(ZikulaBug.Tpl.Var, ZikulaBug.Util, {
             table: TABLE({'class': 'logsTable', width: '100%', cellspacing: 0, cellpadding: 0},
                 THEAD(
                     TR({'class':'headerRow'},
@@ -727,7 +729,8 @@ FBL.ns(function() {
             getMembers: function(object)
             {
                 fdump('ZikulaBug.Tpl.Logs.getMembers');
-                var members = [];
+                var members = [],
+                    realpath = this.getPanel().getPanelData('meta.realpath');
                 
                 for (var i = 0, limit = object.length; i < limit; i++){
                     var item = object[i];
@@ -737,7 +740,7 @@ FBL.ns(function() {
                     } else if (item.trace && item.trace[2]) {
                         item.where = item.trace[2].file + ':' + item.trace[2].line;
                     }
-                    item.where = item.where.replace(ZikulaBug.Meta.realpath,'');
+                    item.where = item.where.replace(realpath,'');
                     switch(item.type) {
                         case 0:
                             item.className = 'logRow-errorMessage typeEmergency';
@@ -782,7 +785,8 @@ FBL.ns(function() {
             getTraceMembers: function(object)
             {
                 fdump('ZikulaBug.Tpl.Logs.getTraceMembers');
-                var members = [];
+                var members = [],
+                    realpath = this.getPanel().getPanelData('meta.realpath');
                 
                 for (var i in object){
                     var item = object[i];
@@ -790,7 +794,7 @@ FBL.ns(function() {
                     if (item.file && item.line) {
                         item.where = item.file + ':' + item.line;
                     }
-                    item.where = item.where.replace(ZikulaBug.Meta.realpath,'');
+                    item.where = item.where.replace(realpath,'');
                     item.name = item['class'] ? item['class'] + item.type + item['function'] : item['function'];
                     members.push(item);
                 }
@@ -847,7 +851,7 @@ FBL.ns(function() {
             emptyRow: DIV(''),
             getCurrentItemTag: function()
             {
-                if (ZikulaBug.Meta.baseURL) {
+                 if (this.getPanel().getPanelData('meta.baseURL')) {
                     return this.itemRow;
                 } else {
                     return this.emptyRow;
@@ -855,14 +859,16 @@ FBL.ns(function() {
             },
             getCurrentItem: function(data)
             {
+                var baseURL = this.getPanel().getPanelData('meta.baseURL');
                 return {
-                    name: this.getHost(ZikulaBug.Meta.baseURL),
-                    value: data[this.getHost(ZikulaBug.Meta.baseURL)] || ''
+                    name: this.getHost(baseURL),
+                    value: data[baseURL] || ''
                 }
             },
             getItems: function(data)
             {
-                var currentHost = this.getHost(ZikulaBug.Meta.baseURL);
+                var baseURL = this.getPanel().getPanelData('meta.baseURL');
+                var currentHost = this.getHost(baseURL);
                 var items = [];
                 for (var prop in data) {
                     if (prop == currentHost) {
@@ -926,31 +932,46 @@ FBL.ns(function() {
             activeView: 'General',
 
 //            getContextMenuItems: function(node, target){},
-            getWrappedData: function(key) {
-                key = key ? key.split('.') : ['Zikula'];
-                var x = this.context.window.wrappedJSObject;
+            getDataByPath: function(key, source) {
+                if (!source) {
+                    return null;
+                }
+                if (!key) {
+                    return source;
+                }
+                key = key.split('.');
+                var x = source;
                 for (var i=0, limit=key.length; i<limit; i++) {
                         x = x[key[i]] || null;
                         if (!x) return x;
                     }
                 return x;
             },
+            getWrappedData: function(key) {
+                key = key || ['Zikula'];
+                return this.getDataByPath(key, this.context.window.wrappedJSObject);
+            },
+            getPanelData: function(key) {
+                return this.getDataByPath(key, this.data);
+            },
             loadData: function(){
                 fdump('ZikulaBug.Panel.loadData');
-                ZikulaBug.Meta.baseURL = this.getWrappedData('Zikula.Config.baseURL') || '';
                 this.data = this.getWrappedData('Zikula.DebugToolbarData');
+                this.data.meta = {
+                    baseURL: this.getWrappedData('Zikula.Config.baseURL') || ''
+                }
                 if (this.data) {
-                    this.data.meta = {
+                    this.data.general = {
                         version: this.data.version.content,
                         addonVersion: ZikulaBug.Meta.version,
                         memory: this.data.memory.content,
                         renderTime: this.data.rendertime.content,
                         sqlCount: this.data.sql.content.length
                     };
-                    ZikulaBug.Meta.realpath = this.data.__meta.realpath;
-                    this.data.meta.sqlTime = 0;
+                    this.data.meta.realpath = this.data.__meta.realpath;
+                    this.data.general.sqlTime = 0;
                     for (var i = 0, limit = this.data.sql.content.length; i < limit; i++){
-                        this.data.meta.sqlTime += this.data.sql.content[i].time;
+                        this.data.general.sqlTime += this.data.sql.content[i].time;
                     }
                 }
                 return this.data;
@@ -958,6 +979,8 @@ FBL.ns(function() {
             initialize: function(context, doc){
                 fdump('ZikulaBug.Panel.initialize');
                 Firebug.ActivablePanel.initialize.apply(this, arguments);
+                
+//                dump('context', context.uid, context, ZikulaBug.Meta.getContext());
                 this.loadData();
             },
             getBody: function(id, title){
@@ -982,7 +1005,7 @@ FBL.ns(function() {
             },
             displayGeneral: function(){
                 fdump('ZikulaBug.Panel.displayGeneral');
-                var data = this.data.meta;
+                var data = this.data.general;
                 var body = this.getBody('general', 'General');
                 ZikulaBug.Tpl.General.tag.append({'data': data}, body, null);
             },
@@ -995,9 +1018,9 @@ FBL.ns(function() {
             displaySql: function(){
                 fdump('ZikulaBug.Panel.displaySql');
                 var data = this.data.sql.content,
-                    meta = this.data.meta;
+                    general = this.data.general;
                 var body = this.getBody('sql', 'SQL Queries');
-                ZikulaBug.Tpl.Sql.table.append({'data': data, 'meta': meta}, body, null);
+                ZikulaBug.Tpl.Sql.table.append({'data': data, 'general': general}, body, null);
             },
             displayView: function(){
                 fdump('ZikulaBug.Panel.displayView');
@@ -1037,6 +1060,10 @@ FBL.ns(function() {
             defaultView: 'general',
 
 //            reattachContext: function(browser, context){},
+            initialize: function(){
+                fdump('ZikulaBugModel.initialize');
+                Firebug.ActivableModule.initialize.apply(this, arguments);
+            },
             getPanel: function(context){
                 fdump('ZikulaBugModel.getPanel');
                 context = context || FirebugContext;
