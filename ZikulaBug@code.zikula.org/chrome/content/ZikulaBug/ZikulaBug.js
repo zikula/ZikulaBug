@@ -3,7 +3,8 @@ FBL.ns(function() {
         // namespace
         var ZikulaBug = top.ZikulaBug = {};
         ZikulaBug.Meta = {
-            id: 'ZikulaBug@code.zikula.org'
+            id: 'ZikulaBug@code.zikula.org',
+            secKeyHeader: 'x-zikula-debugtoolbar'
         };
         Components.utils['import']('resource://gre/modules/AddonManager.jsm');
         AddonManager.getAddonByID(ZikulaBug.Meta.id, function(addon) {
@@ -56,6 +57,7 @@ FBL.ns(function() {
         };
         // http observer
         ZikulaBug.httpRequestObserver = {
+            observing: false,
             observe: function(subject, topic, data) {
                 if (topic == 'http-on-modify-request') {
                     var httpChannel = subject.QueryInterface(Components.interfaces.nsIHttpChannel),
@@ -64,7 +66,7 @@ FBL.ns(function() {
                             return (httpChannel.name.indexOf(element) >= 0) ;
                         }).sort().reverse()[0];
                     if (key && prefs[key]) {
-                        httpChannel.setRequestHeader('x-zikula-debugtoolbar', prefs[key], false);
+                        httpChannel.setRequestHeader(ZikulaBug.Meta.secKeyHeader, prefs[key], false);
                     }
                 }
             },
@@ -73,10 +75,14 @@ FBL.ns(function() {
                     .getService(Components.interfaces.nsIObserverService);
             },
             register: function() {
-                this.observerService.addObserver(this, 'http-on-modify-request', false);
+                if (!this.observing) {
+                    this.observerService.addObserver(this, 'http-on-modify-request', false);
+                }
+                this.observing = true;
             },
             unregister: function() {
                 this.observerService.removeObserver(this, 'http-on-modify-request');
+                this.observing = false;
             }
         };
 
@@ -1073,6 +1079,13 @@ FBL.ns(function() {
             displayNullInfo: function(){
                 fdump('ZikulaBug.Panel.displayNullInfo');
                 ZikulaBug.Tpl.Info.tag.replace({'id': 'nullInfo', 'title': 'No data', 'info': 'no zikula data!'}, this.panelNode, null);
+            },
+            onActivationChanged: function(enable) {
+                if (enable) {
+                    Firebug.ZikulaBugModel.addObserver(this);
+                } else {
+                    Firebug.ZikulaBugModel.removeObserver(this);
+                }
             }
         });
 
@@ -1087,7 +1100,6 @@ FBL.ns(function() {
             initialize: function(){
                 fdump('ZikulaBugModel.initialize');
                 Firebug.ActivableModule.initialize.apply(this, arguments);
-                ZikulaBug.httpRequestObserver.register();
             },
             getPanel: function(context){
                 fdump('ZikulaBugModel.getPanel');
@@ -1116,6 +1128,14 @@ FBL.ns(function() {
                 }
                 this.getPanel(context).activeView = view;
                 this.getPanel(context).display();
+            },
+            onObserverChange: function(observer)
+            {
+                if (this.hasObservers()) {
+                    ZikulaBug.httpRequestObserver.register();
+                } else {
+                    ZikulaBug.httpRequestObserver.unregister();
+                }
             }
         });
 
