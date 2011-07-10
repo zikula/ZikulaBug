@@ -912,8 +912,8 @@ FBL.ns(function() {
             {
                 var baseURL = this.getPanel().getPanelData('meta.baseURL') || '';
                 return {
-                    name: this.getHost(baseURL),
-                    value: baseURL ? data[this.getHost(baseURL)] : ''
+                    name: this.getHost(baseURL) || '',
+                    value: baseURL ? (data[this.getHost(baseURL)] || '') : ''
                 }
             },
             getItems: function(data)
