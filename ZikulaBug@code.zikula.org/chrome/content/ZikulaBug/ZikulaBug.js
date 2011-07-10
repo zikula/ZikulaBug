@@ -857,6 +857,18 @@ FBL.ns(function() {
         ZikulaBug.Tpl.Request = domplate(ZikulaBug.Tpl.VarList,{
             render: function(data, node, context)
             {
+                if (data.cookie) {
+                    for (prop in data.cookie) {
+                        try {
+                            var decoded = JSON.parse(decodeURI(decodeURI(data.cookie[prop]))),
+                                orginal = data.cookie[prop];
+                            data.cookie[prop] = {
+                                'orginal value': orginal,
+                                decoded: decoded
+                            }
+                        } catch (e) {}
+                    }
+                }
                 this.varListTag.append({object: data}, node, context);
             }
         });
