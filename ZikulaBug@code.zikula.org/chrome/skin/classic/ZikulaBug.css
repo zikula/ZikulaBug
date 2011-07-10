@@ -76,6 +76,9 @@
 .panelNode-ZikulaBugPanel .logsTable .logType {
     padding-left: 20px;
 }
+.panelNode-ZikulaBugPanel .logsTable .itemMessage {
+    margin-left: 20px;
+}
 .panelNode-ZikulaBugPanel .logsTable .itemTrace {
     padding-left: 20px;
 }
