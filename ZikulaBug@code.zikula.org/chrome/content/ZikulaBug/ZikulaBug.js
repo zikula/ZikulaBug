@@ -54,6 +54,32 @@ FBL.ns(function() {
             context = context || FirebugContext;
             return context.getPanel('ZikulaBugPanel');
         };
+        // http observer
+        ZikulaBug.httpRequestObserver = {
+            observe: function(subject, topic, data) {
+                if (topic == 'http-on-modify-request') {
+                    var httpChannel = subject.QueryInterface(Components.interfaces.nsIHttpChannel),
+                        prefs = ZikulaBug.Util.getPrefs('secKey') || {};
+                        key = Object.keys(prefs).filter(function (element, index, array) {
+                            return (httpChannel.name.indexOf(element) >= 0) ;
+                        }).sort().reverse()[0];
+                    if (key && prefs[key]) {
+                        httpChannel.setRequestHeader('x-zikula-debugtoolbar', prefs[key], false);
+                    }
+                }
+            },
+            get observerService() {
+                return Components.classes['@mozilla.org/observer-service;1']
+                    .getService(Components.interfaces.nsIObserverService);
+            },
+            register: function() {
+                this.observerService.addObserver(this, 'http-on-modify-request', false);
+            },
+            unregister: function() {
+                this.observerService.removeObserver(this, 'http-on-modify-request');
+            }
+        };
+
         // templates
         ZikulaBug.Reps = [];
         ZikulaBug.Tpl = {};
@@ -862,7 +888,7 @@ FBL.ns(function() {
                 var baseURL = this.getPanel().getPanelData('meta.baseURL');
                 return {
                     name: this.getHost(baseURL),
-                    value: data[baseURL] || ''
+                    value: data[this.getHost(baseURL)] || ''
                 }
             },
             getItems: function(data)
@@ -956,7 +982,7 @@ FBL.ns(function() {
             },
             loadData: function(){
                 fdump('ZikulaBug.Panel.loadData');
-                this.data = this.getWrappedData('Zikula.DebugToolbarData');
+                this.data = this.getWrappedData('Zikula.DebugToolbarData') || {};
                 this.data.meta = {
                     baseURL: this.getWrappedData('Zikula.Config.baseURL') || ''
                 }
@@ -979,8 +1005,6 @@ FBL.ns(function() {
             initialize: function(context, doc){
                 fdump('ZikulaBug.Panel.initialize');
                 Firebug.ActivablePanel.initialize.apply(this, arguments);
-                
-//                dump('context', context.uid, context, ZikulaBug.Meta.getContext());
                 this.loadData();
             },
             getBody: function(id, title){
@@ -1063,6 +1087,7 @@ FBL.ns(function() {
             initialize: function(){
                 fdump('ZikulaBugModel.initialize');
                 Firebug.ActivableModule.initialize.apply(this, arguments);
+                ZikulaBug.httpRequestObserver.register();
             },
             getPanel: function(context){
                 fdump('ZikulaBugModel.getPanel');
