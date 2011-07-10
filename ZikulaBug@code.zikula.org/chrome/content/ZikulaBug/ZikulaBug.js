@@ -883,7 +883,7 @@ FBL.ns(function() {
             emptyRow: DIV(''),
             getCurrentItemTag: function()
             {
-                 if (this.getPanel().getPanelData('meta.baseURL')) {
+                if (this.getPanel().getPanelData('meta.baseURL')) {
                     return this.itemRow;
                 } else {
                     return this.emptyRow;
@@ -891,15 +891,15 @@ FBL.ns(function() {
             },
             getCurrentItem: function(data)
             {
-                var baseURL = this.getPanel().getPanelData('meta.baseURL');
+                var baseURL = this.getPanel().getPanelData('meta.baseURL') || '';
                 return {
                     name: this.getHost(baseURL),
-                    value: data[this.getHost(baseURL)] || ''
+                    value: baseURL ? data[this.getHost(baseURL)] : ''
                 }
             },
             getItems: function(data)
             {
-                var baseURL = this.getPanel().getPanelData('meta.baseURL');
+                var baseURL = this.getPanel().getPanelData('meta.baseURL') || '';
                 var currentHost = this.getHost(baseURL);
                 var items = [];
                 for (var prop in data) {
@@ -961,6 +961,7 @@ FBL.ns(function() {
             searchable: false, //TODO implement search where possible
 
             data: null,
+            meta: {},
             activeView: 'General',
 
 //            getContextMenuItems: function(node, target){},
@@ -984,14 +985,12 @@ FBL.ns(function() {
                 return this.getDataByPath(key, this.context.window.wrappedJSObject);
             },
             getPanelData: function(key) {
-                return this.getDataByPath(key, this.data);
+                return this.getDataByPath(key, this);
             },
             loadData: function(){
                 fdump('ZikulaBug.Panel.loadData');
-                this.data = this.getWrappedData('Zikula.DebugToolbarData') || {};
-                this.data.meta = {
-                    baseURL: this.getWrappedData('Zikula.Config.baseURL') || ''
-                }
+                this.data = this.getWrappedData('Zikula.DebugToolbarData') || null;
+                this.meta.baseURL = this.getWrappedData('Zikula.Config.baseURL') || ''
                 if (this.data) {
                     this.data.general = {
                         version: this.data.version.content,
@@ -1000,7 +999,7 @@ FBL.ns(function() {
                         renderTime: this.data.rendertime.content,
                         sqlCount: this.data.sql.content.length
                     };
-                    this.data.meta.realpath = this.data.__meta.realpath;
+                    this.meta.realpath = this.data.__meta.realpath;
                     this.data.general.sqlTime = 0;
                     for (var i = 0, limit = this.data.sql.content.length; i < limit; i++){
                         this.data.general.sqlTime += this.data.sql.content[i].time;
