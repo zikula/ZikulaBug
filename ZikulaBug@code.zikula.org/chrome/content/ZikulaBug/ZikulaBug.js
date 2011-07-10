@@ -853,6 +853,13 @@ FBL.ns(function() {
                 }
             }
         });
+        // Template for HTTP request view
+        ZikulaBug.Tpl.Request = domplate(ZikulaBug.Tpl.VarList,{
+            render: function(data, node, context)
+            {
+                this.varListTag.append({object: data}, node, context);
+            }
+        });
 
         // Template for Settings view
         ZikulaBug.Tpl.Settings = domplate(ZikulaBug.Util,{
@@ -1068,6 +1075,12 @@ FBL.ns(function() {
                 var data = this.data.logs.content
                 var body = this.getBody('logs', 'Log console');
                 ZikulaBug.Tpl.Logs.table.append({'data': data}, body, null);
+            },
+            displayRequest: function(){
+                fdump('ZikulaBug.Panel.displayRequest');
+                var data = this.data.http_request
+                var body = this.getBody('request', 'HTTP request');
+                ZikulaBug.Tpl.Request.render(data, body);
             },
             displaySettings: function(){
                 fdump('ZikulaBug.Panel.displaySettings');

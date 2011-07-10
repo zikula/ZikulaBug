@@ -15,6 +15,7 @@
         <command id="cmd_ZikulaBugView" oncommand="Firebug.ZikulaBugModel.setActiveView(FirebugContext, 'View')"/>
         <command id="cmd_ZikulaBugExec" oncommand="Firebug.ZikulaBugModel.setActiveView(FirebugContext, 'Exec')"/>
         <command id="cmd_ZikulaBugLogs" oncommand="Firebug.ZikulaBugModel.setActiveView(FirebugContext, 'Logs')"/>
+        <command id="cmd_ZikulaBugRequest" oncommand="Firebug.ZikulaBugModel.setActiveView(FirebugContext, 'Request')"/>
         <command id="cmd_ZikulaBugSettings" oncommand="Firebug.ZikulaBugModel.setActiveView(FirebugContext, 'Settings')"/>
     </commandset> 
     
@@ -47,6 +48,10 @@
                                 tooltiptext="Log console"
                                 class="toolbar-text-button" group="ZikulaBug"
                                 command="cmd_ZikulaBugLogs"/>
+               <toolbarbutton id="fbZikulaBug-Request" label="HTTP request" type="radio"
+                                tooltiptext="HTTP request"
+                                class="toolbar-text-button" group="ZikulaBug"
+                                command="cmd_ZikulaBugRequest"/>
                <toolbarseparator/>
                <toolbarbutton id="fbZikulaBug-Settings" label="Settings" type="radio"
                                 tooltiptext="Settings"
