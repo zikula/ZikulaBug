@@ -92,13 +92,13 @@ FBL.ns(function() {
             },
             getPropName: function(name)
             {
-                name = name.split(':');
-                return name[1] || name[0];
+                return name.split(':').pop()
             },
             getPropType: function(name)
             {
                 name = name.split(':');
-                return name.length == 2 ? name[0] : '';
+                name.pop();
+                return name.join(' ');
             },
 
             longPropIterator: function (object)

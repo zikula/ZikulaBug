@@ -47,6 +47,29 @@
 .panelNode-ZikulaBugPanel [visible=false] {
     visibility: hidden;
 }
+.panelNode-ZikulaBugPanel .classProperty {
+    padding-left: 16px;
+    background-repeat: no-repeat;
+    background-position: 0 1px;
+}
+.panelNode-ZikulaBugPanel .classProperty.public {
+    background-image: url(chrome://ZikulaBug/skin/prop_public.png);
+}
+.panelNode-ZikulaBugPanel .classProperty.protected {
+    background-image: url(chrome://ZikulaBug/skin/prop_protected.png);
+}
+.panelNode-ZikulaBugPanel .classProperty.private {
+    background-image: url(chrome://ZikulaBug/skin/prop_private.png);
+}
+.panelNode-ZikulaBugPanel .classProperty.public.static {
+    background-image: url(chrome://ZikulaBug/skin/prop_public_static.png);
+}
+.panelNode-ZikulaBugPanel .classProperty.protected.static {
+    background-image: url(chrome://ZikulaBug/skin/prop_protected_static.png);
+}
+.panelNode-ZikulaBugPanel .classProperty.private.static {
+    background-image: url(chrome://ZikulaBug/skin/prop_private_static.png);
+}
 
 /* General tables */
 .panelNode-ZikulaBugPanel table td {
@@ -143,7 +166,7 @@
     padding: 5px 13px 5px 5px;
 }
 
-/* TEMPORARY */
+/* Settings View */
 .panelNode-ZikulaBugPanel #settings p {
     margin: 0;
     padding: 0.67em 0;
