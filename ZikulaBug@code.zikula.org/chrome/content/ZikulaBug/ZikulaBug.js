@@ -10,15 +10,14 @@ FBL.ns(function() {
         AddonManager.getAddonByID(ZikulaBug.Meta.id, function(addon) {
             ZikulaBug.Meta.version = addon.version;
         });
+
         // utils
         ZikulaBug.Util = {};
-        ZikulaBug.Util.parseTime = function (time, units)
-        {
+        ZikulaBug.Util.parseTime = function (time, units) {
             unit = units ? ' ms' : ''
             return Number((Number(time)*1000).toFixed(2)).toLocaleString() + unit;
         };
-        ZikulaBug.Util.parseMemory = function (number, units, format)
-        {
+        ZikulaBug.Util.parseMemory = function (number, units, format) {
             var divisor = 1024,
                 unit = units ? ' kb' : '';
             if (format == 'mb') {
@@ -27,8 +26,7 @@ FBL.ns(function() {
             }
             return Number((Number(number)/divisor).toFixed(1)).toLocaleString() + unit;
         };
-        ZikulaBug.Util.getHost = function(url)
-        {
+        ZikulaBug.Util.getHost = function(url) {
             return url.replace(/(https?:\/\/(www\.)?)/i,'');
         };
         ZikulaBug.Util.getPrefs = function(key) {
@@ -51,10 +49,10 @@ FBL.ns(function() {
             return Firebug.setPref(Firebug.prefDomain, 'ZikulaBugPanel.' + key, value);
         };
         ZikulaBug.Util.getPanel = function(context) {
-            fdump('ZikulaBugModel.getPanel');
             context = context || FirebugContext;
             return context.getPanel('ZikulaBugPanel');
         };
+
         // http observer
         ZikulaBug.httpRequestObserver = {
             observing: false,
@@ -92,11 +90,11 @@ FBL.ns(function() {
         ZikulaBug.Tpl.ignoreVars = extend(ignoreVars,{
             '__phpClassName': 1
         });
-        ZikulaBug.Tpl.getRep = function(object, context)
-        {
+        ZikulaBug.Tpl.getRep = function(object, context) {
             var type = typeof(object);
-            if (type == 'object' && object instanceof String)
+            if (type == 'object' && object instanceof String) {
                 type = 'string';
+            }
 
             for (var i = 0; i < ZikulaBug.Reps.length; ++i) {
                 var rep = ZikulaBug.Reps[i];
@@ -109,6 +107,11 @@ FBL.ns(function() {
             // nothing found - use firebug default reps
             return Firebug.getRep(object);
         };
+
+        // Base for tpl
+        ZikulaBug.Tpl.BaseRep = domplate(Firebug.Rep, ZikulaBug.Util, {
+            inspectable: false
+        });
 
         ZikulaBug.Tpl.MainTag = domplate({
             tag: DIV({'id': '$id', 'class': 'ZikulaBugWrapper'})
@@ -124,59 +127,54 @@ FBL.ns(function() {
         });
 
         // General template for browsing objects list, based on DomPanel
-        ZikulaBug.Tpl.VarList = domplate(Firebug.Rep,
-        {
+        ZikulaBug.Tpl.VarList = domplate(ZikulaBug.Tpl.BaseRep, {
             insertSliceSize: 18,
             insertInterval: 40,
 
-            varListTag: TABLE({"class": "domTable", cellpadding: 0, cellspacing: 0, onclick: "$onVarListClick"},
+            varListTag: TABLE({'class': 'domTable', cellpadding: 0, cellspacing: 0, onclick: '$onVarListClick'},
                 TBODY(
                     TAG('$varListSizerRow'),
-                    FOR("member", "$object|getVarListMembers", TAG('$varListContentRow', {'member': '$member'}))
+                    FOR('member', '$object|getVarListMembers', TAG('$varListContentRow', {'member': '$member'}))
                 )
             ),
             varListSizerRow: TR(
-                TD({width: "30%"}),
-                TD({width: "70%"})
+                TD({width: '30%'}),
+                TD({width: '70%'})
             ),
-            varListRowTag: FOR("member", "$members", TAG('$varListContentRow', {'member': '$member'})),
-            varListContentRow: TR({"class": "memberRow $member.open $member.type\\Row", $hasChildren: "$member.hasChildren",
-                level: "$member.level", _domObject: "$member"},
-                TD({"class": "memberLabelCell", style: "padding-left: $member.indent\\px"},
-                    DIV({"class": "memberLabel $member.type\\Label"}, 
-                        TAG('$member.nameTag', {object:"$member.name"})
+            varListRowTag: FOR('member', '$members', TAG('$varListContentRow', {'member': '$member'})),
+            varListContentRow: TR({'class': 'memberRow $member.open $member.type\\Row', $hasChildren: '$member.hasChildren',
+                level: '$member.level', _domObject: '$member'},
+                TD({'class': 'memberLabelCell', style: 'padding-left: $member.indent\\px'},
+                    DIV({'class': 'memberLabel $member.type\\Label'}, 
+                        TAG('$member.nameTag', {object:'$member.name'})
                     )
                 ),
-                TD({"class": "memberValueCell"},
-                    TAG("$member.tag", {object: "$member.value"})
+                TD({'class': 'memberValueCell'},
+                    TAG('$member.tag', {object: '$member.value'})
                 )
             ),
-            onVarListClick: function(event)
-            {
-                fdump('ZikulaBug.Tpl.VarList.onVarListClick');
+            onVarListClick: function(event) {
                 if (!isLeftClick(event)) {
                     return;
                 }
-                var row = getAncestorByClass(event.target, "memberRow"),
-                    isStringLabel = !getAncestorByClass(event.target, "memberLabel") && hasClass(event.target, "objectBox-string");
-                if (hasClass(row, "hasChildren") && !isStringLabel) {
+                var row = getAncestorByClass(event.target, 'memberRow'),
+                    isStringLabel = !getAncestorByClass(event.target, 'memberLabel') && hasClass(event.target, 'objectBox-string');
+                if (hasClass(row, 'hasChildren') && !isStringLabel) {
                     this.toggleVarListRow(row);
                     cancelEvent(event);
                 } else {
                     cancelEvent(event);
                 }
             },
-            toggleVarListRow: function(row)
-            {
-                fdump('ZikulaBug.Tpl.VarList.toggleVarListRow');
-                var level = parseInt(row.getAttribute("level"));
+            toggleVarListRow: function(row) {
+                var level = parseInt(row.getAttribute('level'));
                 var toggles = row.parentNode.parentNode.toggles;
                 var target = row.lastChild.firstChild;
-                var isString = hasClass(target, "objectBox-string");
+                var isString = hasClass(target, 'objectBox-string');
 
-                if (hasClass(row, "opened")) {
-                    removeClass(row, "opened");
-                    setClass(row, "closed");
+                if (hasClass(row, 'opened')) {
+                    removeClass(row, 'opened');
+                    setClass(row, 'closed');
 
                     if (isString) {
                         var rowValue = row.domObject.value
@@ -188,18 +186,16 @@ FBL.ns(function() {
                         setTimeout(function()
                         {
                             for (var firstRow = row.nextSibling; firstRow; firstRow = row.nextSibling) {
-                                if (parseInt(firstRow.getAttribute("level")) <= level) {
+                                if (parseInt(firstRow.getAttribute('level')) <= level) {
                                     break;
                                 }
-
                                 tbody.removeChild(firstRow);
                             }
                         }, row.insertTimeout ? row.insertTimeout : 0);
                     }
-
                 } else {
-                    removeClass(row, "closed");
-                    setClass(row, "opened");
+                    removeClass(row, 'closed');
+                    setClass(row, 'opened');
 
                     if (isString) {
                         var rowValue = row.domObject.value
@@ -232,10 +228,7 @@ FBL.ns(function() {
 
                 }
             },
-            getVarListMembers: function(object, level)  // we expect object to be user-level object wrapped in security blanket
-            {
-                fdump('ZikulaBug.Tpl.VarList.getVarListMembers');
-
+            getVarListMembers: function(object, level) {
                 if (!level) {
                     level = 0;
                 }
@@ -252,45 +245,39 @@ FBL.ns(function() {
                         var insecureObject = object;
                     }
 
-                    for (var name in insecureObject) { // enumeration is safe
-                        if (ZikulaBug.Tpl.ignoreVars[name] == 1) { // javascript.options.strict says ignoreVars is undefined.
+                    for (var name in insecureObject) {
+                        if (ZikulaBug.Tpl.ignoreVars[name] == 1) {
                             continue;
                         }
 
                         var val;
                         try {
-                            val = insecureObject[name];  // getter is safe
-                        } catch (exc) {
-                            // Sometimes we get exceptions trying to access certain members
-                        }
+                            val = insecureObject[name];
+                        } catch (exc) {}
 
                         var ordinal = parseInt(name);
 
                         if (ordinal || ordinal == 0) {
-                            this.addVarListMember("ordinal", ordinals, name, val, level, insecureObject);
-                        } else if (typeof(val) == "function") {
+                            this.addVarListMember('ordinal', ordinals, name, val, level, insecureObject);
+                        } else if (typeof(val) == 'function') {
                             if (this.isClassFunction(val)) {
-                                this.addVarListMember("userClass", userClasses, name, val, level, insecureObject);
+                                this.addVarListMember('userClass', userClasses, name, val, level, insecureObject);
                             } else if (name in domMembers) {
-                                this.addVarListMember("domFunction", domFuncs, name, val, level, domMembers[name], insecureObject);
+                                this.addVarListMember('domFunction', domFuncs, name, val, level, domMembers[name], insecureObject);
                             } else {
-                                this.addVarListMember("userFunction", userFuncs, name, val, level, insecureObject);
+                                this.addVarListMember('userFunction', userFuncs, name, val, level, insecureObject);
                             }
                         } else {
                             if (name in domMembers) {
-                                this.addVarListMember("dom", domProps, name, val, level, domMembers[name], insecureObject);
+                                this.addVarListMember('dom', domProps, name, val, level, domMembers[name], insecureObject);
                             } else if (name in domConstantMap) {
-                                this.addVarListMember("dom", domConstants, name, val, level, insecureObject);
+                                this.addVarListMember('dom', domConstants, name, val, level, insecureObject);
                             } else {
-                                this.addVarListMember("user", userProps, name, val, level, insecureObject);
+                                this.addVarListMember('user', userProps, name, val, level, insecureObject);
                             }
                         }
                     }
-                } catch (exc) {
-                    // Sometimes we get exceptions just from trying to iterate the members
-                    // of certain objects, like StorageList, but don't let that gum up the works
-                    //throw exc;
-                }
+                } catch (exc) {}
 
 //                function sortName(a, b) { return a.name > b.name ? 1 : -1; }
                 var members = [];
@@ -303,18 +290,15 @@ FBL.ns(function() {
 
                 return members;
             },
-            expandVarListMembers: function(members, toggles, offset, level)  // recursion starts with offset=0, level=0
-            {
-                fdump('ZikulaBug.Tpl.VarList.expandVarListMembers');
+            expandVarListMembers: function(members, toggles, offset, level) {
                 var expanded = 0;
                 for (var i = offset; i < members.length; ++i) {
                     var member = members[i];
                     if (member.level > level) {
                         break;
                     }
-
                     if (toggles.hasOwnProperty(member.name)) {
-                        member.open = "opened";  // member.level <= level && member.name in toggles.
+                        member.open = 'opened';  // member.level <= level && member.name in toggles.
 
                         var newMembers = this.getVarListMembers(member.value, level+1);  // sets newMembers.level to level+1
 
@@ -328,9 +312,7 @@ FBL.ns(function() {
 
                 return expanded;
             },
-            isClassFunction: function(fn)
-            {
-                fdump('ZikulaBug.Tpl.VarList.isClassFunction');
+            isClassFunction: function(fn) {
                 try {
                     for (var name in fn.prototype) {
                         return true;
@@ -338,12 +320,10 @@ FBL.ns(function() {
                 } catch (exc) {}
                 return false;
             },
-            hasProperties: function(ob)
-            {
-                fdump('ZikulaBug.Tpl.VarList.hasProperties');
+            hasProperties: function(ob) {
                 try {
                     for (var name in ob) {
-                        if (ZikulaBug.Tpl.ignoreVars[name] == 1) { // javascript.options.strict says ignoreVars is undefined.
+                        if (ZikulaBug.Tpl.ignoreVars[name] == 1) {
                             continue;
                         }
                         return true;
@@ -351,19 +331,15 @@ FBL.ns(function() {
                 } catch (exc) {}
                 return false;
             },
-            hasChildren: function(value)
-            {
-                fdump('ZikulaBug.Tpl.VarList.hasChildren');
+            hasChildren: function(value) {
                 var valueType = typeof(value);
                 var hasChildren = this.hasProperties(value) && !(value instanceof ErrorCopy) &&
-                    (valueType == "function" || (valueType == "object" && value != null)
-                    || (valueType == "string" && value.length > ZikulaBug.Tpl.Reps.StringMaxLenght));
+                    (valueType == 'function' || (valueType == 'object' && value != null)
+                    || (valueType == 'string' && value.length > ZikulaBug.Tpl.Reps.StringMaxLenght));
                 return hasChildren;
             },
-            addVarListMember: function(type, props, name, value, level, parent)
-            {
-                fdump('ZikulaBug.Tpl.VarList.addVarListMember');
-                var rep = ZikulaBug.Tpl.getRep(value);    // do this first in case a call to instanceof reveals contents
+            addVarListMember: function(type, props, name, value, level, parent) {
+                var rep = ZikulaBug.Tpl.getRep(value);
                 var tag = rep.shortTag ? rep.shortTag : rep.tag;
                 var parentRep = ZikulaBug.Tpl.getRep(parent);
                 var nameTag = parentRep.keyTag;
@@ -375,22 +351,22 @@ FBL.ns(function() {
                 }
 
                 props.push({
-                        name: name,// tutaj muszę poprawnie dekodować klucze
-                        nameTag: nameTag,
-                        value: value,
-                        type: type,
-                        rowClass: "memberRow-"+type,
-                        open: "closed",
-                        level: level,
-                        indent: level*16,
-                        hasChildren: hasChildren,
-                        tag: tag
-                    });
+                    name: name,
+                    nameTag: nameTag,
+                    value: value,
+                    type: type,
+                    rowClass: 'memberRow-'+type,
+                    open: 'closed',
+                    level: level,
+                    indent: level*16,
+                    hasChildren: hasChildren,
+                    tag: tag
+                });
             }
         });
         
         // General template for browsing objects, based on FirebugReps
-        ZikulaBug.Tpl.Var = domplate(ZikulaBug.Tpl.VarList,{
+        ZikulaBug.Tpl.Var = domplate(ZikulaBug.Tpl.VarList, {
             varTag: TAG('$varCotnainer', {object: '$object|parseVarObject'}),
             varCotnainer: DIV({'class': 'varCotnainer', _item: '$object'},
                 DIV({'class': 'zkOpener', onclick: '$onVarTogglerClick', visible: '$object.hasChildren'}, ''),
@@ -399,8 +375,7 @@ FBL.ns(function() {
                 )
             ),
             varRep: TAG('$tag', {object: '$value'}),
-            parseVarObject: function(value)
-            {
+            parseVarObject: function(value) {
                 var object = {
                         value: value,
                         className: ''
@@ -410,8 +385,7 @@ FBL.ns(function() {
                 object.hasChildren = this.hasChildren(value);
                 return object;
             },
-            onVarTogglerClick: function(event)
-            {
+            onVarTogglerClick: function(event) {
                 if (!isLeftClick(event)) {
                     return;
                 }
@@ -419,8 +393,7 @@ FBL.ns(function() {
                 var row = getAncestorByClass(event.target, 'varCotnainer');
                 this.toggleVarRow(row);
             },
-            onVarClick: function(event)
-            {
+            onVarClick: function(event) {
                 if (!isLeftClick(event)) {
                     return;
                 }
@@ -428,23 +401,18 @@ FBL.ns(function() {
                 var row = getAncestorByClass(event.target, 'varCotnainer'),
                     toggler = getChildByClass(row,'zkOpener');
                 this.toggleVarRow(row);
-//                if (!hasClass(toggler, 'opened')) {
-//                    this.toggleVarRow(row);
-//                }
             },
-            toggleVarRow: function(row)
-            {
+            toggleVarRow: function(row) {
                 var toggler = getChildByClass(row,'zkOpener');
                     objElement = getChildByClass(row,'varTag');
-                    obj = objElement.repObject || row.item.value;
-                var rep = ZikulaBug.Tpl.getRep(obj);
+                    obj = objElement.repObject || row.item.value,
+                    rep = ZikulaBug.Tpl.getRep(obj);
                 if (!hasClass(toggler, 'opened')) {
                     removeClass(toggler, 'closed');
                     setClass(toggler, 'opened');
                     if (typeof(obj) == 'string') {
                         this.varRep.replace({tag: rep.tag, value: obj}, objElement)
                     } else {
-//                        this.varListTag.replace({object: obj}, objElement)
                         this.varListTag.append({object: obj}, objElement)
                     }
                 } else {
@@ -456,15 +424,14 @@ FBL.ns(function() {
         });
 
         // Template for General view
-        ZikulaBug.Tpl.General = domplate(ZikulaBug.Util,{
+        ZikulaBug.Tpl.General = domplate(ZikulaBug.Tpl.BaseRep, {
             tag: FOR('item', '$data|getItems',
                 DIV({'class': 'definitionRow'},
                     DIV({'class': 'definitionLabel'}, '$item.name'),
                     DIV({'class': 'definitionValue'}, '$item.value')
                 )
             ),
-            getItems: function(data)
-            {
+            getItems: function(data) {
                 var items = [
                     {name: 'Zikula version', value: data.version},
                     {name: 'ZikulaBug version', value: data.addonVersion},
@@ -478,9 +445,8 @@ FBL.ns(function() {
         });
 
         // Template for Config view
-        ZikulaBug.Tpl.Config = domplate(ZikulaBug.Tpl.VarList,{
-            render: function(data, node, context)
-            {
+        ZikulaBug.Tpl.Config = domplate(ZikulaBug.Tpl.VarList, {
+            render: function(data, node, context) {
                 var obj = {};
                 for (var prop in data) {
                     obj[data[prop].title] = data[prop].content;
@@ -491,7 +457,7 @@ FBL.ns(function() {
         });
 
         // Template for Queries view
-        ZikulaBug.Tpl.Sql = domplate(ZikulaBug.Util,{
+        ZikulaBug.Tpl.Sql = domplate(ZikulaBug.Tpl.BaseRep, {
             table: TABLE({'class': 'sqlTable', width: '100%', cellspacing: 0, cellpadding: 0},
                 THEAD(
                     TR({'class':'headerRow'},
@@ -536,8 +502,7 @@ FBL.ns(function() {
                     )
                 )
             ),
-            getBody: function(data)
-            {
+            getBody: function(data) {
                 if (data.length > 0) {
                     return this.tableBody;
                 } else {
@@ -569,9 +534,8 @@ FBL.ns(function() {
         });
 
         // Template for Templates view
-        ZikulaBug.Tpl.View = domplate(ZikulaBug.Tpl.VarList,{
-            render: function(data, node, context)
-            {
+        ZikulaBug.Tpl.View = domplate(ZikulaBug.Tpl.VarList, {
+            render: function(data, node, context) {
                 var obj = {};
                 for (var i = 0, limit = data.length; i < limit; i++){
                     var item = data[i],
@@ -584,7 +548,7 @@ FBL.ns(function() {
         });
 
         // Template for Functions view
-        ZikulaBug.Tpl.Exec = domplate(ZikulaBug.Tpl.Var, ZikulaBug.Util, {
+        ZikulaBug.Tpl.Exec = domplate(ZikulaBug.Tpl.Var, {
             table: TABLE({'class': 'execTable', width: '100%', cellspacing: 0, cellpadding: 0},
                 THEAD(
                     TR({'class':'headerRow'},
@@ -608,7 +572,7 @@ FBL.ns(function() {
                 FOR('item', '$data|getMembers',
                     TR({'class': 'contentRow'},
                         TD({'class': 'tableCell'}, 
-                            DIV({'class': 'tableCellBox', style: "padding-left: $item.indent\\px"}, 
+                            DIV({'class': 'tableCellBox', style: 'padding-left: $item.indent\\px'}, 
                                 DIV({'class': 'itemName'}, '$item.name'))
                         ),
                         TD({'class': 'tableCell'}, 
@@ -634,17 +598,14 @@ FBL.ns(function() {
                     )
                 )
             ),
-            getBody: function(data)
-            {
+            getBody: function(data) {
                 if (data.length > 0) {
                     return this.tableBody;
                 } else {
                     return this.tableEmpty;
                 }
             },
-            getMembers: function(object)
-            {
-                fdump('ZikulaBug.Tpl.Exec.getMembers');
+            getMembers: function(object) {
                 var members = [];
                 
                 for (var i = 0, limit = object.length; i < limit; i++){
@@ -659,7 +620,7 @@ FBL.ns(function() {
         });
 
         // Template for Logs view
-        ZikulaBug.Tpl.Logs = domplate(ZikulaBug.Tpl.Var, ZikulaBug.Util, {
+        ZikulaBug.Tpl.Logs = domplate(ZikulaBug.Tpl.Var, {
             table: TABLE({'class': 'logsTable', width: '100%', cellspacing: 0, cellpadding: 0},
                 THEAD(
                     TR({'class':'headerRow'},
@@ -704,7 +665,7 @@ FBL.ns(function() {
                     )
                 )
             ),
-            traceInfoRow: TR({"class": 'infoRow'},
+            traceInfoRow: TR({'class': 'infoRow'},
                 TD({'class': 'infoCol', colspan: 3})
             ),
             traceInfoBody: DIV({'class': 'infoBody'},
@@ -750,17 +711,14 @@ FBL.ns(function() {
                     )
                 )
             ),
-            getBody: function(data)
-            {
+            getBody: function(data) {
                 if (data.length > 0) {
                     return this.tableBody;
                 } else {
                     return this.tableEmpty;
                 }
             },
-            getMembers: function(object)
-            {
-                fdump('ZikulaBug.Tpl.Logs.getMembers');
+            getMembers: function(object) {
                 var members = [],
                     realpath = this.getPanel().getPanelData('meta.realpath');
                 
@@ -814,9 +772,7 @@ FBL.ns(function() {
 
                 return members;
             },
-            getTraceMembers: function(object)
-            {
-                fdump('ZikulaBug.Tpl.Logs.getTraceMembers');
+            getTraceMembers: function(object) {
                 var members = [],
                     realpath = this.getPanel().getPanelData('meta.realpath');
                 
@@ -833,9 +789,7 @@ FBL.ns(function() {
 
                 return members;
             },
-            onItemTraceClick: function(event)
-            {
-                fdump('ZikulaBug.Tpl.Logs.onItemTraceClick');
+            onItemTraceClick: function(event) {
                 if (!hasClass(event.target, 'zkOpener')) {
                     return;
                 }
@@ -849,14 +803,13 @@ FBL.ns(function() {
                         infoCol = getElementByClass(infoRow, 'infoCol'),
                         item = event.target.item;
                     item.trace = item.trace || {};
-                    var traceInfo = this.traceInfoBody.replace({data: item.trace}, infoCol);
+                    this.traceInfoBody.replace({data: item.trace}, infoCol);
                 }
             }
         });
         // Template for HTTP request view
-        ZikulaBug.Tpl.Request = domplate(ZikulaBug.Tpl.VarList,{
-            render: function(data, node, context)
-            {
+        ZikulaBug.Tpl.Request = domplate(ZikulaBug.Tpl.VarList, {
+            render: function(data, node, context) {
                 if (data.cookie) {
                     for (prop in data.cookie) {
                         try {
@@ -874,7 +827,7 @@ FBL.ns(function() {
         });
 
         // Template for Settings view
-        ZikulaBug.Tpl.Settings = domplate(ZikulaBug.Util,{
+        ZikulaBug.Tpl.Settings = domplate(ZikulaBug.Tpl.BaseRep, {
             tag: DIV(
                 P('Here you can define secKeys for individual sites.'),
                 TAG('$data|getCurrentItemTag', {item: '$data|getCurrentItem', className: 'currentHost'}),
@@ -900,27 +853,24 @@ FBL.ns(function() {
                 )
             ),
             emptyRow: DIV(''),
-            getCurrentItemTag: function()
-            {
+            getCurrentItemTag: function() {
                 if (this.getPanel().getPanelData('meta.baseURL')) {
                     return this.itemRow;
                 } else {
                     return this.emptyRow;
                 }
             },
-            getCurrentItem: function(data)
-            {
+            getCurrentItem: function(data) {
                 var baseURL = this.getPanel().getPanelData('meta.baseURL') || '';
                 return {
                     name: this.getHost(baseURL) || '',
                     value: baseURL ? (data[this.getHost(baseURL)] || '') : ''
                 }
             },
-            getItems: function(data)
-            {
-                var baseURL = this.getPanel().getPanelData('meta.baseURL') || '';
-                var currentHost = this.getHost(baseURL);
-                var items = [];
+            getItems: function(data) {
+                var baseURL = this.getPanel().getPanelData('meta.baseURL') || '',
+                    currentHost = this.getHost(baseURL),
+                    items = [];
                 for (var prop in data) {
                     if (prop == currentHost) {
                         continue;
@@ -933,14 +883,12 @@ FBL.ns(function() {
                 }
                 return items;
             },
-            toggleRow: function(event)
-            {
+            toggleRow: function(event) {
                 var parent = getAncestorByClass(event.target, 'otherHosts'),
                     row = getChildByClass(parent, 'otherHostsInner');
                 toggleClass(parent, 'closed')
             },
-            savePref: function(event)
-            {
+            savePref: function(event) {
                 cancelEvent(event);
                 var row = getAncestorByClass(event.target, 'definitionValue'),
                     input = getChildByClass(row,'prefValue'),
@@ -948,8 +896,7 @@ FBL.ns(function() {
                 prefs[input.name] = input.value;
                 this.setPrefs('secKey', prefs);
             },
-            clearPref: function(event)
-            {
+            clearPref: function(event) {
                 cancelEvent(event);
                 var row = getAncestorByClass(event.target, 'definitionValue'),
                     input = getChildByClass(row,'prefValue'),
@@ -958,8 +905,7 @@ FBL.ns(function() {
                 this.setPrefs('secKey', prefs);
                 input.value = '';
             },
-            deletePref: function(event)
-            {
+            deletePref: function(event) {
                 cancelEvent(event);
                 var row = getAncestorByClass(event.target, 'definitionValue'),
                     input = getChildByClass(row,'prefValue'),
@@ -973,11 +919,10 @@ FBL.ns(function() {
 
         // Firebug Panel
         ZikulaBug.Panel = function() {}
-        ZikulaBug.Panel.prototype = extend(Firebug.ActivablePanel,
-        {
+        ZikulaBug.Panel.prototype = extend(Firebug.ActivablePanel, {
             name: 'ZikulaBugPanel',
             title: 'Zikula',
-            searchable: false, //TODO implement search where possible
+            searchable: false,
 
             data: null,
             meta: {},
@@ -1006,7 +951,7 @@ FBL.ns(function() {
             getPanelData: function(key) {
                 return this.getDataByPath(key, this);
             },
-            loadData: function(){
+            loadData: function() {
                 fdump('ZikulaBug.Panel.loadData');
                 this.data = this.getWrappedData('Zikula.DebugToolbarData') || null;
                 this.meta.baseURL = this.getWrappedData('Zikula.Config.baseURL') || ''
@@ -1026,85 +971,86 @@ FBL.ns(function() {
                 }
                 return this.data;
             },
-            initialize: function(context, doc){
+            initialize: function(context, doc) {
                 fdump('ZikulaBug.Panel.initialize');
                 Firebug.ActivablePanel.initialize.apply(this, arguments);
                 this.loadData();
             },
-            getBody: function(id, title){
+            getBody: function(id, title) {
                 fdump('ZikulaBug.Panel.getBody');
                 return ZikulaBug.Tpl.MainTag.tag.replace({'id': id}, this.panelNode, null);
             },
-            getDebug: function(info){
+            getDebug: function(info) {
                 fdump('ZikulaBug.Panel.getDebug');
-                info = JSON.stringify(info);
+                var info = JSON.stringify(info);
                 return ZikulaBug.Tpl.Info.tag.replace({'id': 'debug', 'title': 'DebugData', 'info': info}, this.panelNode, null);
             },
-            display: function(){
+            display: function() {
                 fdump('ZikulaBug.Panel.display');
-                // to tylko tymczasowy fix - trzeba poprawić ładowanie danych
+                // TODO: check if there's need to reset view
                 this.panelNode.innerHTML = '';
                 if (this.data == null && !this.loadData() && this.activeView != 'Settings') {
                     this.displayNullInfo()
                     return;
                 }
-                dump('this.panelNode', this.panelNode);
+                dump('this.panelNode', this.panelNode, this);
                 this['display' + this.activeView]();
             },
-            displayGeneral: function(){
+            displayGeneral: function() {
                 fdump('ZikulaBug.Panel.displayGeneral');
-                var data = this.data.general;
-                var body = this.getBody('general', 'General');
+                var data = this.data.general,
+                    body = this.getBody('general', 'General');
                 ZikulaBug.Tpl.General.tag.append({'data': data}, body, null);
             },
-            displayConfig: function(){
+            displayConfig: function() {
                 fdump('ZikulaBug.Panel.displayConfig');
-                var data = this.data.config.content;
-                var body = this.getBody('config', 'Configuration');
+                var data = this.data.config.content,
+                    body = this.getBody('config', 'Configuration');
                 ZikulaBug.Tpl.Config.render(data, body);
             },
-            displaySql: function(){
+            displaySql: function() {
                 fdump('ZikulaBug.Panel.displaySql');
                 var data = this.data.sql.content,
-                    general = this.data.general;
-                var body = this.getBody('sql', 'SQL Queries');
+                    general = this.data.general,
+                    body = this.getBody('sql', 'SQL Queries');
                 ZikulaBug.Tpl.Sql.table.append({'data': data, 'general': general}, body, null);
             },
-            displayView: function(){
+            displayView: function() {
                 fdump('ZikulaBug.Panel.displayView');
-                var data = this.data.view.content;
-                var body = this.getBody('view', 'Templates');
+                var data = this.data.view.content,
+                    body = this.getBody('view', 'Templates');
                 ZikulaBug.Tpl.View.render(data, body);
             },
-            displayExec: function(){
+            displayExec: function() {
                 fdump('ZikulaBug.Panel.displayExec');
-                var data = this.data.exec.content;
-                var body = this.getBody('exec', 'Functions executions');
+                var data = this.data.exec.content,
+                    body = this.getBody('exec', 'Functions executions');
                 ZikulaBug.Tpl.Exec.table.append({'data': data}, body);
             },
-            displayLogs: function(){
+            displayLogs: function() {
                 fdump('ZikulaBug.Panel.displayLogs');
-                var data = this.data.logs.content
-                var body = this.getBody('logs', 'Log console');
+                var data = this.data.logs.content,
+                    body = this.getBody('logs', 'Log console');
                 ZikulaBug.Tpl.Logs.table.append({'data': data}, body, null);
             },
-            displayRequest: function(){
+            displayRequest: function() {
                 fdump('ZikulaBug.Panel.displayRequest');
-                var data = this.data.http_request
-                var body = this.getBody('request', 'HTTP request');
+                var data = this.data.http_request,
+                    body = this.getBody('request', 'HTTP request');
                 ZikulaBug.Tpl.Request.render(data, body);
             },
-            displaySettings: function(){
+            displaySettings: function() {
                 fdump('ZikulaBug.Panel.displaySettings');
-                var data = ZikulaBug.Util.getPrefs('secKey') || {};
-                var body = this.getBody('settings', 'Settings');
+                var data = ZikulaBug.Util.getPrefs('secKey') || {},
+                    body = this.getBody('settings', 'Settings');
                 ZikulaBug.Tpl.Settings.tag.append({data: data}, body, null);
             },
-            displayNullInfo: function(){
+            displayNullInfo: function() {
                 fdump('ZikulaBug.Panel.displayNullInfo');
                 ZikulaBug.Tpl.Info.tag.replace({'id': 'nullInfo', 'title': 'No data', 'info': 'no zikula data!'}, this.panelNode, null);
             },
             onActivationChanged: function(enable) {
+                fdump('ZikulaBug.Panel.onActivationChanged');
                 if (enable) {
                     Firebug.ZikulaBugModel.addObserver(this);
                 } else {
@@ -1114,35 +1060,30 @@ FBL.ns(function() {
         });
 
         // Firebug Model
-        Firebug.ZikulaBugModel = extend(Firebug.ActivableModule,
-        {
-//            availableViews: ['general', 'config', 'sql', 'view', 'exec', 'logs', 'settings'],
-//            searchableViews: ['Logs', 'Cache', 'Database', 'Timers'],
+        Firebug.ZikulaBugModel = extend(Firebug.ActivableModule, {
             defaultView: 'general',
 
-//            reattachContext: function(browser, context){},
-            initialize: function(){
+            initialize: function() {
                 fdump('ZikulaBugModel.initialize');
                 Firebug.ActivableModule.initialize.apply(this, arguments);
             },
-            getPanel: function(context){
+            getPanel: function(context) {
                 fdump('ZikulaBugModel.getPanel');
                 context = context || FirebugContext;
                 return context.getPanel('ZikulaBugPanel');
             },
-            showPanel: function(browser, panel){
+            showPanel: function(browser, panel) {
                 var isZikulaBug = panel && panel.name == 'ZikulaBugPanel';
                 if (isZikulaBug) {
-                     fdump('ZikulaBugModel.showPanel');
+                    fdump('ZikulaBugModel.showPanel');
                     var ZikulaBugButtons = browser.chrome.$('fbZikulaBugButtons');
                     collapse(ZikulaBugButtons, false);
                     this.setActiveView(null, null, ZikulaBugButtons);
                 }
             },
-            // powiązany z buttonami w xul - ustawia bieżący view i wywołuje panel.displayCurrentView
-            setActiveView: function(context, view, ZikulaBugButtons){
+            setActiveView: function(context, view, ZikulaBugButtons) {
                 fdump('ZikulaBugModel.setActiveView');
-                if (!view && ZikulaBugButtons){
+                if (!view && ZikulaBugButtons) {
                     active = ZikulaBugButtons.querySelector('[checked]');
                     if (active) {
                         view = active.id.replace('fbZikulaBug-','');
@@ -1153,24 +1094,22 @@ FBL.ns(function() {
                 this.getPanel(context).activeView = view;
                 this.getPanel(context).display();
             },
-            onObserverChange: function(observer)
-            {
+            onObserverChange: function(observer) {
+                fdump('ZikulaBugModel.onObserverChange');
                 if (this.hasObservers()) {
                     ZikulaBug.httpRequestObserver.register();
                 } else {
                     ZikulaBug.httpRequestObserver.unregister();
                 }
-            }
+            },
         });
 
-        function dump()
-        {
+        function dump() {
 //            return;
              Firebug.Console.log(arguments);
         }
-        function fdump()
-        {
-            return;
+        function fdump() {
+//            return;
             var name = arguments[0],
                 args = fdump.caller.arguments
             Firebug.Console.log(['FDUMP: ' +name, args]);
@@ -1179,7 +1118,7 @@ FBL.ns(function() {
         Firebug.registerPanel(ZikulaBug.Panel);
         Firebug.registerActivableModule(Firebug.ZikulaBugModel);
 
-        Firebug.registerStylesheet("chrome://ZikulaBug/skin/ZikulaBug.css");
+        Firebug.registerStylesheet('chrome://ZikulaBug/skin/ZikulaBug.css');
 
     }
 });
