@@ -11,6 +11,18 @@ FBL.ns(function() {
             ZikulaBug.Meta.version = addon.version;
         });
 
+        // localisation
+        function $ZB_STR(name)
+        {
+            return document.getElementById("strings_ZikulaBug").getString(name);
+        }
+
+        function $ZB_STRF(name, args)
+        {
+            return document.getElementById("strings_ZikulaBug")
+                .getFormattedString(name, args);
+        }
+
         // utils
         ZikulaBug.Util = {};
         ZikulaBug.Util.parseTime = function (time, units) {
@@ -145,7 +157,7 @@ FBL.ns(function() {
             varListContentRow: TR({'class': 'memberRow $member.open $member.type\\Row', $hasChildren: '$member.hasChildren',
                 level: '$member.level', _domObject: '$member'},
                 TD({'class': 'memberLabelCell', style: 'padding-left: $member.indent\\px'},
-                    DIV({'class': 'memberLabel $member.type\\Label'}, 
+                    DIV({'class': 'memberLabel $member.type\\Label'},
                         TAG('$member.nameTag', {object:'$member.name'})
                     )
                 ),
@@ -364,7 +376,7 @@ FBL.ns(function() {
                 });
             }
         });
-        
+
         // General template for browsing objects, based on FirebugReps
         ZikulaBug.Tpl.Var = domplate(ZikulaBug.Tpl.VarList, {
             varTag: TAG('$varCotnainer', {object: '$object|parseVarObject'}),
@@ -433,13 +445,14 @@ FBL.ns(function() {
             ),
             getItems: function(data) {
                 var items = [
-                    {name: 'Zikula version', value: data.version},
-                    {name: 'ZikulaBug version', value: data.addonVersion},
-                    {name: 'Memory usage', value: this.parseMemory(data.memory, true)},
-                    {name: 'Page render time', value: this.parseTime(data.renderTime, true)},
-                    {name: 'SQL queries', value: data.sqlCount},
-                    {name: 'SQL queries time', value: this.parseTime(data.sqlTime, true)},
+                    {name: $ZB_STR('ZikulaBug.ZikulaVersion'), value: data.version},
+                    {name: $ZB_STR('ZikulaBug.ZikulaBugVersion'), value: data.addonVersion},
+                    {name: $ZB_STR('ZikulaBug.MemoryUsage'), value: this.parseMemory(data.memory, true)},
+                    {name: $ZB_STR('ZikulaBug.PageRenderTime'), value: this.parseTime(data.renderTime, true)},
+                    {name: $ZB_STR('ZikulaBug.SqlQueries'), value: data.sqlCount},
+                    {name: $ZB_STR('ZikulaBug.SqlQueriesTime'), value: this.parseTime(data.sqlTime, true)},
                 ];
+                dump(items);
                 return items;
             }
         });
@@ -462,10 +475,10 @@ FBL.ns(function() {
                 THEAD(
                     TR({'class':'headerRow'},
                         TD({width:'95%','class': 'headerCell'},
-                            DIV({'class': 'headerCellBox'}, 'Query')
+                            DIV({'class': 'headerCellBox'}, $ZB_STR('ZikulaBug.Query'))
                         ),
                         TD({width:'5%','class': 'headerCell'},
-                            DIV({'class': 'headerCellBox'}, 'Time (ms)')
+                            DIV({'class': 'headerCellBox'}, $ZB_STR('ZikulaBug.Time.ms'))
                         )
                     )
                 ),
@@ -474,31 +487,32 @@ FBL.ns(function() {
             tableBody: TBODY(
                 FOR('item', '$data',
                     TR({'class': 'contentRow'},
-                        TD({'class': 'tableCell queryStr'}, 
-                            DIV({'class': 'tableCellBox'}, 
+                        TD({'class': 'tableCell queryStr'},
+                            DIV({'class': 'tableCellBox'},
                                 FOR('token','$item.query|getQueryTokens',
                                     SPAN({'class': '$token.className'},'$token.content ')
                                 )
                             )
                         ),
-                        TD({'class': 'tableCell queryTime dataNum'}, 
+                        TD({'class': 'tableCell queryTime dataNum'},
                             DIV({'class': 'tableCellBox'}, '$item.time|parseTime')
                         )
                     )
                 ),
                 TR({'class': 'summaryRow'},
-                    TD({'class': 'tableCell queryStr'}, 
-                        DIV({'class': 'tableCellBox'}, '$general.sqlCount queries')
+                    TD({'class': 'tableCell queryStr'},
+//                        DIV({'class': 'tableCellBox'}, '$general.sqlCount queries')
+                        DIV({'class': 'tableCellBox'}, $ZB_STRF('ZikulaBug.QueriesCount', ['$general.sqlCount']))
                     ),
-                    TD({'class': 'tableCell queryTime dataNum'}, 
+                    TD({'class': 'tableCell queryTime dataNum'},
                         DIV({'class': 'tableCellBox'},'$general.sqlTime|parseTime')
                     )
                 )
             ),
             tableEmpty: TBODY(
                 TR({'class': 'contentRow typeEmpty'},
-                    TD({colspan: '2', 'class': 'tableCell'}, 
-                        DIV({'class': 'tableCellBox'}, 'No items found.')
+                    TD({colspan: '2', 'class': 'tableCell'},
+                        DIV({'class': 'tableCellBox'}, $ZB_STR('ZikulaBug.NoSqlItems'))
                     )
                 )
             ),
@@ -553,16 +567,16 @@ FBL.ns(function() {
                 THEAD(
                     TR({'class':'headerRow'},
                         TD({width:'25%','class': 'headerCell'},
-                            DIV({'class': 'headerCellBox'}, 'Function')
+                            DIV({'class': 'headerCellBox'},  $ZB_STR('ZikulaBug.Function'))
                         ),
                         TD({width:'35%','class': 'headerCell'},
-                            DIV({'class': 'headerCellBox'}, 'Arguments')
+                            DIV({'class': 'headerCellBox'},  $ZB_STR('ZikulaBug.Arguments'))
                         ),
                         TD({width:'35%','class': 'headerCell'},
-                            DIV({'class': 'headerCellBox'}, 'Returned data')
+                            DIV({'class': 'headerCellBox'},  $ZB_STR('ZikulaBug.ReturnedData'))
                         ),
                         TD({width:'5%','class': 'headerCell'},
-                            DIV({'class': 'headerCellBox'}, 'Time (ms)')
+                            DIV({'class': 'headerCellBox'},  $ZB_STR('ZikulaBug.Time.ms'))
                         )
                     )
                 ),
@@ -571,16 +585,16 @@ FBL.ns(function() {
             tableBody: TBODY(
                 FOR('item', '$data|getMembers',
                     TR({'class': 'contentRow'},
-                        TD({'class': 'tableCell'}, 
-                            DIV({'class': 'tableCellBox', style: 'padding-left: $item.indent\\px'}, 
+                        TD({'class': 'tableCell'},
+                            DIV({'class': 'tableCellBox', style: 'padding-left: $item.indent\\px'},
                                 DIV({'class': 'itemName'}, '$item.name'))
                         ),
-                        TD({'class': 'tableCell'}, 
+                        TD({'class': 'tableCell'},
                             DIV({'class': 'tableCellBox', _domObject: '$item.args'},
                                 TAG('$varTag', {object: '$item.args'})
                             )
                         ),
-                        TD({'class': 'tableCell'}, 
+                        TD({'class': 'tableCell'},
                             DIV({'class': 'tableCellBox', _domObject: '$item.data'},
                                 TAG('$varTag', {object: '$item.data'})
                             )
@@ -593,8 +607,8 @@ FBL.ns(function() {
             ),
             tableEmpty: TBODY(
                 TR({'class': 'contentRow typeEmpty'},
-                    TD({colspan: '4', 'class': 'tableCell'}, 
-                        DIV({'class': 'tableCellBox'}, 'No items found.')
+                    TD({colspan: '4', 'class': 'tableCell'},
+                        DIV({'class': 'tableCellBox'}, $ZB_STR('ZikulaBug.NoExexItems'))
                     )
                 )
             ),
@@ -607,7 +621,7 @@ FBL.ns(function() {
             },
             getMembers: function(object) {
                 var members = [];
-                
+
                 for (var i = 0, limit = object.length; i < limit; i++){
                     var item = object[i];
                     item.name = item.module +'/' + item.type + item.api + '/' + item.func;
@@ -625,13 +639,13 @@ FBL.ns(function() {
                 THEAD(
                     TR({'class':'headerRow'},
                         TD({width:'10%','class': 'headerCell'},
-                            DIV({'class': 'headerCellBox'}, 'Type')
+                            DIV({'class': 'headerCellBox'}, $ZB_STR('ZikulaBug.Type'))
                         ),
                         TD({width:'55%','class': 'headerCell'},
-                            DIV({'class': 'headerCellBox'}, 'Message')
+                            DIV({'class': 'headerCellBox'}, $ZB_STR('ZikulaBug.Message'))
                         ),
                         TD({width:'35%','class': 'headerCell'},
-                            DIV({'class': 'headerCellBox'}, 'File:Line')
+                            DIV({'class': 'headerCellBox'}, $ZB_STR('ZikulaBug.FileLine'))
                         )
                     )
                 ),
@@ -640,10 +654,10 @@ FBL.ns(function() {
             tableBody: TBODY(
                 FOR('item', '$data|getMembers',
                     TR({'class': 'contentRow $item.className'},
-                        TD({'class': 'tableCell logType'}, 
+                        TD({'class': 'tableCell logType'},
                             DIV({'class': 'tableCellBox'}, '$item.typeName')
                         ),
-                        TD({'class': 'tableCell'}, 
+                        TD({'class': 'tableCell'},
                             DIV({'class':'tableCellBox'},
                                 DIV({'class': 'zkOpener', onclick: '$onItemTraceClick', _item: '$item'}, ''),
                                 DIV({'class': 'itemMessage'}, '$item.errstr'),
@@ -660,8 +674,8 @@ FBL.ns(function() {
             ),
             tableEmpty: TBODY(
                 TR({'class': 'contentRow logRow-debug typeEmpty'},
-                    TD({colspan: '3', 'class': 'tableCell'}, 
-                        DIV({'class': 'tableCellBox'}, 'No items found.')
+                    TD({colspan: '3', 'class': 'tableCell'},
+                        DIV({'class': 'tableCellBox'}, $ZB_STR('ZikulaBug.NoLogsItems'))
                     )
                 )
             ),
@@ -670,7 +684,7 @@ FBL.ns(function() {
             ),
             traceInfoBody: DIV({'class': 'infoBody'},
                 DIV({'class': 'infoTabs'},
-                    A({'class': 'infoValueTab infoTab', 'selected' : true}, 'Backtrace' )
+                    A({'class': 'infoValueTab infoTab', 'selected' : true}, $ZB_STR('ZikulaBug.Backtrace'))
                 ),
                 DIV({'class': 'infoValueText infoText'},
                     TAG('$traceTable', {'data':'$data'})
@@ -680,13 +694,13 @@ FBL.ns(function() {
                 THEAD(
                     TR({'class':'headerRow'},
                         TD({width:'15%','class': 'headerCell'},
-                            DIV({'class': 'headerCellBox'}, 'Function')
+                            DIV({'class': 'headerCellBox'}, $ZB_STR('ZikulaBug.Function'))
                         ),
                         TD({width:'50%','class': 'headerCell'},
-                            DIV({'class': 'headerCellBox'}, 'Arguments')
+                            DIV({'class': 'headerCellBox'}, $ZB_STR('ZikulaBug.Arguments'))
                         ),
                         TD({width:'35%','class': 'headerCell'},
-                            DIV({'class': 'headerCellBox'}, 'File:Line')
+                            DIV({'class': 'headerCellBox'}, $ZB_STR('ZikulaBug.FileLine'))
                         )
                     )
                 ),
@@ -695,10 +709,10 @@ FBL.ns(function() {
             traceTableBody: TBODY(
                 FOR('item', '$data|getTraceMembers',
                     TR({'class': 'contentRow'},
-                        TD({'class': 'tableCell'}, 
+                        TD({'class': 'tableCell'},
                             DIV({'class': 'tableCellBox'}, '$item.name')
                         ),
-                        TD({'class': 'tableCell'}, 
+                        TD({'class': 'tableCell'},
                             DIV({'class': 'tableCellBox logsTraceArgs', _domObject: '$item.args'},
                                 TAG('$varTag', {object: '$item.args'})
                             )
@@ -721,7 +735,7 @@ FBL.ns(function() {
             getMembers: function(object) {
                 var members = [],
                     realpath = this.getPanel().getPanelData('meta.realpath');
-                
+
                 for (var i = 0, limit = object.length; i < limit; i++){
                     var item = object[i];
                     item.where = '';
@@ -766,7 +780,7 @@ FBL.ns(function() {
                             item.typeName = 'Debug';
                             break;
                     }
-                    
+
                     members.push(item);
                 }
 
@@ -775,7 +789,7 @@ FBL.ns(function() {
             getTraceMembers: function(object) {
                 var members = [],
                     realpath = this.getPanel().getPanelData('meta.realpath');
-                
+
                 for (var i in object){
                     var item = object[i];
                     item.where = '';
@@ -815,10 +829,9 @@ FBL.ns(function() {
                         try {
                             var decoded = JSON.parse(decodeURI(decodeURI(data.cookie[prop]))),
                                 orginal = data.cookie[prop];
-                            data.cookie[prop] = {
-                                'orginal value': orginal,
-                                decoded: decoded
-                            }
+                            data.cookie[prop] = {}
+                            data.cookie[prop][$ZB_STR('ZikulaBug.OrginalCookie')] = orginal;
+                            data.cookie[prop][$ZB_STR('ZikulaBug.DecodedCookie')] = decoded;
                         } catch (e) {}
                     }
                 }
@@ -829,12 +842,12 @@ FBL.ns(function() {
         // Template for Settings view
         ZikulaBug.Tpl.Settings = domplate(ZikulaBug.Tpl.BaseRep, {
             tag: DIV(
-                P('Here you can define secKeys for individual sites.'),
+                P($ZB_STR('ZikulaBug.SettingsIntro')),
                 TAG('$data|getCurrentItemTag', {item: '$data|getCurrentItem', className: 'currentHost'}),
                 DIV({'class': 'otherHosts closed'},
                     DIV({'class':'controlls'},
-                        A({'class': 'showOtherHosts', onclick:'$toggleRow'}, 'Show other hosts'),
-                        A({'class': 'hideOtherHosts', onclick:'$toggleRow'}, 'Hide other hosts')
+                        A({'class': 'showOtherHosts', onclick:'$toggleRow'}, $ZB_STR('ZikulaBug.ShowOtherHosts')),
+                        A({'class': 'hideOtherHosts', onclick:'$toggleRow'}, $ZB_STR('ZikulaBug.HideOtherHosts'))
                     ),
                     DIV({'class': 'otherHostsInner'},
                         FOR('item', '$data|getItems',
@@ -845,11 +858,11 @@ FBL.ns(function() {
             ),
             itemRow: DIV({'class': 'definitionRow $className'},
                 DIV({'class': 'definitionLabel'}, '$item.name'),
-                DIV({'class': 'definitionValue'}, 
+                DIV({'class': 'definitionValue'},
                     INPUT({type: 'text', 'class': 'prefValue', name: '$item.name', value: '$item.value'}),
-                    A({'class': 'settingsControll save', onclick: '$savePref'}, 'Save'),
-                    A({'class': 'settingsControll clear', onclick: '$clearPref'}, 'Clear'),
-                    A({'class': 'settingsControll delete', onclick: '$deletePref'}, 'Delete')
+                    A({'class': 'settingsControll save', onclick: '$savePref'}, $ZB_STR('ZikulaBug.Save')),
+                    A({'class': 'settingsControll clear', onclick: '$clearPref'}, $ZB_STR('ZikulaBug.Clear')),
+                    A({'class': 'settingsControll delete', onclick: '$deletePref'}, $ZB_STR('ZikulaBug.Delete'))
                 )
             ),
             emptyRow: DIV(''),
@@ -1047,7 +1060,7 @@ FBL.ns(function() {
             },
             displayNullInfo: function() {
                 fdump('ZikulaBug.Panel.displayNullInfo');
-                ZikulaBug.Tpl.Info.tag.replace({'id': 'nullInfo', 'title': 'No data', 'info': 'no zikula data!'}, this.panelNode, null);
+                ZikulaBug.Tpl.Info.tag.replace({'id': 'nullInfo', 'title': $ZB_STR('ZikulaBug.NoData'), 'info': $ZB_STR('ZikulaBug.NoDataInfo')}, this.panelNode, null);
             },
             onActivationChanged: function(enable) {
                 fdump('ZikulaBug.Panel.onActivationChanged');

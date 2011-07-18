@@ -2,12 +2,19 @@
 
 <?xml-stylesheet href="chrome://ZikulaBug/skin/ZikulaBug.css"?>
 
+<!DOCTYPE ZikulaBugDTD SYSTEM "chrome://ZikulaBug/locale/ZikulaBug.dtd">
+
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
     <script type="application/x-javascript"
             src="chrome://ZikulaBug/content/ZikulaBug.js"/> 
     <script type="application/x-javascript"
             src="chrome://ZikulaBug/content/ZikulaBugReps.js"/> 
+
+    <stringbundleset id="stringbundleset">
+        <stringbundle id="strings_ZikulaBug" src="chrome://ZikulaBug/locale/ZikulaBug.properties"/>
+    </stringbundleset>
+
     <commandset id="mainCommandSet"> 
         <command id="cmd_ZikulaBugGeneral" oncommand="Firebug.ZikulaBugModel.setActiveView(FirebugContext, 'General')"/>
         <command id="cmd_ZikulaBugConfig" oncommand="Firebug.ZikulaBugModel.setActiveView(FirebugContext, 'Config')"/>
@@ -24,37 +31,37 @@
         <hbox id="fbToolbarInner" insertbefore="fbDetachButton" flex="1" align="center"> 
         
             <hbox id="fbZikulaBugButtons" insertafter="fbNetButtons"> 
-               <toolbarbutton id="fbZikulaBug-General" label="General" type="radio"
-                                tooltiptext="General"
+               <toolbarbutton id="fbZikulaBug-General" label="&ZikulaBug.General;" type="radio"
+                                tooltiptext="&ZikulaBug.GeneralTitle;"
                                 class="toolbar-text-button" group="ZikulaBug" checked="true" 
                                 command="cmd_ZikulaBugGeneral"/>
-                <toolbarbutton id="fbZikulaBug-Config" label="Configuration" type="radio"
-                                tooltiptext="Configuration"
+                <toolbarbutton id="fbZikulaBug-Config" label="&ZikulaBug.Configuration;" type="radio"
+                                tooltiptext="&ZikulaBug.ConfigurationTitle;"
                                 class="toolbar-text-button" group="ZikulaBug"
                                 command="cmd_ZikulaBugConfig"/>
-               <toolbarbutton id="fbZikulaBug-Sql" label="Queries" type="radio"
-                                tooltiptext="SQL Queries"
+               <toolbarbutton id="fbZikulaBug-Sql" label="&ZikulaBug.Queries;" type="radio"
+                                tooltiptext="&ZikulaBug.QueriesTitle;"
                                 class="toolbar-text-button" group="ZikulaBug"
                                 command="cmd_ZikulaBugSql"/>
-               <toolbarbutton id="fbZikulaBug-View" label="Templates" type="radio"
-                                tooltiptext="Templates"
+               <toolbarbutton id="fbZikulaBug-View" label="&ZikulaBug.Templates;" type="radio"
+                                tooltiptext="&ZikulaBug.TemplatesTitle;"
                                 class="toolbar-text-button" group="ZikulaBug"
                                 command="cmd_ZikulaBugView"/>
-               <toolbarbutton id="fbZikulaBug-Exec" label="Functions executions" type="radio"
-                                tooltiptext="Module Func/API executions"
+               <toolbarbutton id="fbZikulaBug-Exec" label="&ZikulaBug.FunctionsExecutions;" type="radio"
+                                tooltiptext="&ZikulaBug.FunctionsExecutionsTitle;"
                                 class="toolbar-text-button" group="ZikulaBug"
                                 command="cmd_ZikulaBugExec"/>
-               <toolbarbutton id="fbZikulaBug-Logs" label="Log console" type="radio"
-                                tooltiptext="Log console"
+               <toolbarbutton id="fbZikulaBug-Logs" label="&ZikulaBug.LogConsole;" type="radio"
+                                tooltiptext="&ZikulaBug.LogConsoleTitle;"
                                 class="toolbar-text-button" group="ZikulaBug"
                                 command="cmd_ZikulaBugLogs"/>
-               <toolbarbutton id="fbZikulaBug-Request" label="HTTP request" type="radio"
-                                tooltiptext="HTTP request"
+               <toolbarbutton id="fbZikulaBug-Request" label="&ZikulaBug.HTTPrequest;" type="radio"
+                                tooltiptext="&ZikulaBug.HTTPrequestTitle;"
                                 class="toolbar-text-button" group="ZikulaBug"
                                 command="cmd_ZikulaBugRequest"/>
                <toolbarseparator/>
-               <toolbarbutton id="fbZikulaBug-Settings" label="Settings" type="radio"
-                                tooltiptext="Settings"
+               <toolbarbutton id="fbZikulaBug-Settings" label="&ZikulaBug.Settings;" type="radio"
+                                tooltiptext="&ZikulaBug.SettingsTitle;"
                                 class="toolbar-text-button" group="ZikulaBug"
                                 command="cmd_ZikulaBugSettings"/>
             </hbox> 

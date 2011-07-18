@@ -1,0 +1,16 @@
+<!ENTITY ZikulaBug.General                  "Ogólne">
+<!ENTITY ZikulaBug.GeneralTitle             "Ogólne informacje">
+<!ENTITY ZikulaBug.Configuration            "Konfiguracja">
+<!ENTITY ZikulaBug.ConfigurationTitle       "Konfiguracja Zikuli i modułów">
+<!ENTITY ZikulaBug.Queries                  "SQL">
+<!ENTITY ZikulaBug.QueriesTitle             "Zapytania SQL">
+<!ENTITY ZikulaBug.Templates                "Szablony">
+<!ENTITY ZikulaBug.TemplatesTitle           "Zmienne szablonów">
+<!ENTITY ZikulaBug.FunctionsExecutions      "Wywołania funkcji">
+<!ENTITY ZikulaBug.FunctionsExecutionsTitle "Wywołania funkcji modułów i API">
+<!ENTITY ZikulaBug.LogConsole               "Konsola logów">
+<!ENTITY ZikulaBug.LogConsoleTitle          "Konsola logów">
+<!ENTITY ZikulaBug.HTTPrequest              "Żądanie HTTP">
+<!ENTITY ZikulaBug.HTTPrequestTitle         "Żadanie HTTP">
+<!ENTITY ZikulaBug.Settings                 "Ustawienia">
+<!ENTITY ZikulaBug.SettingsTitle            "Ustawienia">

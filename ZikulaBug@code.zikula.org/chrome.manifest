@@ -1,4 +1,8 @@
 content ZikulaBug chrome/content/ZikulaBug/ xpcnativewrappers=no
 skin    ZikulaBug classic/1.0 chrome/skin/classic/
 
+locale  ZikulaBug en-US chrome/locale/en-US/
+locale  ZikulaBug pl-PL chrome/locale/pl-PL/
+
+
 overlay chrome://firebug/content/firebugOverlay.xul chrome://ZikulaBug/content/ZikulaBugOverlay.xul
