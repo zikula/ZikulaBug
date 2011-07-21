@@ -1069,6 +1069,20 @@ FBL.ns(function() {
                 } else {
                     Firebug.ZikulaBugModel.removeObserver(this);
                 }
+            },
+            getOptionsMenuItems: function(context)    {
+                return [{
+                    label: $ZB_STR('ZikulaBug.About'),
+                    nol10n: true,
+                    type: 'radio',
+                    command: Firebug.ZikulaBugModel.showAboutDialog
+                },{
+                    label: $ZB_STR('ZikulaBug.Help'),
+                    nol10n: true,
+                    type: 'radio',
+                    command: Firebug.ZikulaBugModel.showHelp
+//                    command: function() {openNewTab('https://github.com/zikula/ZikulaBug/wiki')}
+                }];
             }
         });
 
@@ -1106,6 +1120,17 @@ FBL.ns(function() {
                 }
                 this.getPanel(context).activeView = view;
                 this.getPanel(context).display();
+            },
+            showAboutDialog: function() {
+                AddonManager.getAddonByID(ZikulaBug.Meta.id, function(addon) {
+                    openDialog('chrome://mozapps/content/extensions/about.xul', '',
+                    'chrome,centerscreen,modal', addon);
+                });
+            },
+            showHelp: function() {
+                AddonManager.getAddonByID(ZikulaBug.Meta.id, function(addon) {
+                    openNewTab(addon.homepageURL);
+                });
             },
             onObserverChange: function(observer) {
                 fdump('ZikulaBugModel.onObserverChange');
