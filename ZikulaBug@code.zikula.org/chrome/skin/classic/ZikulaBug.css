@@ -185,16 +185,16 @@
     margin: 0 10px;
 }
 .panelNode-ZikulaBugPanel #settings .save {
-    background-image: url(chrome://ZikulaBug/skin/save.png);
+    background-image: url(chrome://ZikulaBug/skin/button_save.png);
 }
 .panelNode-ZikulaBugPanel #settings .clear {
-    background-image: url(chrome://ZikulaBug/skin/clear.png);
+    background-image: url(chrome://ZikulaBug/skin/button_clear.png);
 }
 .panelNode-ZikulaBugPanel #settings .currentHost .delete {
     display: none;
 }
 .panelNode-ZikulaBugPanel #settings .delete {
-    background-image: url(chrome://ZikulaBug/skin/delete.png);
+    background-image: url(chrome://ZikulaBug/skin/button_delete.png);
 }
 .panelNode-ZikulaBugPanel #settings .otherHosts.closed .otherHostsInner {
     display: none;
