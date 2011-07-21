@@ -128,9 +128,7 @@ FBL.ns(function() {
         ZikulaBug.Tpl.MainTag = domplate({
             tag: DIV({'id': '$id', 'class': 'ZikulaBugWrapper'})
         });
-        ZikulaBug.Tpl.Par = domplate({
-            tag: P('$text')
-        });
+
         ZikulaBug.Tpl.Info = domplate({
             tag: DIV({'id': '$id', 'class': 'ZikulaBugWrapper'},
                 H1('$title'),
@@ -291,12 +289,10 @@ FBL.ns(function() {
                     }
                 } catch (exc) {}
 
-//                function sortName(a, b) { return a.name > b.name ? 1 : -1; }
                 var members = [];
                 members.push.apply(members, ordinals);
 
                 if (Firebug.showUserProps) {
-//                    userProps.sort(sortName);
                     members.push.apply(members, userProps);
                 }
 
@@ -310,9 +306,9 @@ FBL.ns(function() {
                         break;
                     }
                     if (toggles.hasOwnProperty(member.name)) {
-                        member.open = 'opened';  // member.level <= level && member.name in toggles.
+                        member.open = 'opened';
 
-                        var newMembers = this.getVarListMembers(member.value, level+1);  // sets newMembers.level to level+1
+                        var newMembers = this.getVarListMembers(member.value, level+1);
 
                         var args = [i+1, 0];
                         args.push.apply(args, newMembers);
@@ -500,7 +496,6 @@ FBL.ns(function() {
                 ),
                 TR({'class': 'summaryRow'},
                     TD({'class': 'tableCell queryStr'},
-//                        DIV({'class': 'tableCellBox'}, '$general.sqlCount queries')
                         DIV({'class': 'tableCellBox'}, $ZB_STRF('ZikulaBug.QueriesCount', ['$general.sqlCount']))
                     ),
                     TD({'class': 'tableCell queryTime dataNum'},
@@ -525,7 +520,6 @@ FBL.ns(function() {
             getQueryTokens: function(query) {
                 var tokens = [],
                     queryArr = query.split(' '),
-//                    tags = ['SELECT', 'UPDATE', 'INSERT', 'DELETE', 'SET', 'FROM', 'LEFT JOIN', 'INNER JOIN', 'WHERE', 'GROUP BY', 'HAVING', 'AS', 'IN', 'ON', 'ORDER BY', 'LIMIT', 'OFFSET', 'AND', 'OR'];
                     tags = ['SELECT',' UPDATE', 'INSERT', 'DELETE', 'SET', 'FROM', 'LEFT JOIN', 'INNER JOIN', 'WHERE', 'GROUP BY', 'HAVING', 'ORDER BY', 'LIMIT', 'OFFSET'];
                     tagsInline = ['AS', 'IN', 'ON', 'AND', 'OR'];
 
@@ -940,7 +934,6 @@ FBL.ns(function() {
             meta: {},
             activeView: 'General',
 
-//            getContextMenuItems: function(node, target){},
             getDataByPath: function(key, source) {
                 if (!source) {
                     return null;
@@ -992,11 +985,6 @@ FBL.ns(function() {
                 fdump('ZikulaBug.Panel.getBody');
                 return ZikulaBug.Tpl.MainTag.tag.replace({'id': id}, this.panelNode, null);
             },
-            getDebug: function(info) {
-                fdump('ZikulaBug.Panel.getDebug');
-                var info = JSON.stringify(info);
-                return ZikulaBug.Tpl.Info.tag.replace({'id': 'debug', 'title': 'DebugData', 'info': info}, this.panelNode, null);
-            },
             display: function() {
                 fdump('ZikulaBug.Panel.display');
                 if (!this.context.loaded || this.panelNode.querySelector('div#'+this.activeView.toLowerCase())) {
@@ -1007,7 +995,7 @@ FBL.ns(function() {
                     this.displayNullInfo()
                     return;
                 }
-                dump('this.panelNode', this.panelNode, this);
+//                dump('this.panelNode', this.panelNode, this);
                 this['display' + this.activeView]();
             },
             displayGeneral: function() {
@@ -1082,7 +1070,6 @@ FBL.ns(function() {
                     nol10n: true,
                     type: 'radio',
                     command: Firebug.ZikulaBugModel.showHelp
-//                    command: function() {openNewTab('https://github.com/zikula/ZikulaBug/wiki')}
                 }];
             }
         });
@@ -1141,6 +1128,7 @@ FBL.ns(function() {
             },
         });
 
+        // debug
         function dump() {
 //            return;
              Firebug.Console.log(arguments);
