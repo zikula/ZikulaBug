@@ -452,7 +452,6 @@ FBL.ns(function() {
                     {name: $ZB_STR('ZikulaBug.SqlQueries'), value: data.sqlCount},
                     {name: $ZB_STR('ZikulaBug.SqlQueriesTime'), value: this.parseTime(data.sqlTime, true)},
                 ];
-                dump(items);
                 return items;
             }
         });
@@ -1114,14 +1113,12 @@ FBL.ns(function() {
             setActiveView: function(context, view, ZikulaBugButtons) {
                 fdump('ZikulaBugModel.setActiveView');
                 if (!view && ZikulaBugButtons) {
-                    active = ZikulaBugButtons.querySelector('[checked]');
-                    if (active) {
-                        view = active.id.replace('fbZikulaBug-','');
-                    }
-                } else {
-                    view = view || this.defaultView;
+                    view = this.getPanel(context).activeView;
+                    ZikulaBugButtons.querySelector('[id=fbZikulaBug-'+ view +']').checked = true;
+                } else if (view) {
+                    this.getPanel(context).activeView = view;
                 }
-                this.getPanel(context).activeView = view;
+
                 this.getPanel(context).display();
             },
             showAboutDialog: function() {
@@ -1150,7 +1147,7 @@ FBL.ns(function() {
              Firebug.Console.log(arguments);
         }
         function fdump() {
-//            return;
+            return;
             var name = arguments[0],
                 args = fdump.caller.arguments
             Firebug.Console.log(['FDUMP: ' +name, args]);
