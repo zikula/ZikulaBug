@@ -1000,6 +1000,9 @@ FBL.ns(function() {
             },
             display: function() {
                 fdump('ZikulaBug.Panel.display');
+                if (!this.context.loaded) {
+                    return;
+                }
                 // TODO: check if there's need to reset view
                 this.panelNode.innerHTML = '';
                 if (this.data == null && !this.loadData() && this.activeView != 'Settings') {
