@@ -999,10 +999,9 @@ FBL.ns(function() {
             },
             display: function() {
                 fdump('ZikulaBug.Panel.display');
-                if (!this.context.loaded) {
+                if (!this.context.loaded || this.panelNode.querySelector('div#'+this.activeView.toLowerCase())) {
                     return;
                 }
-                // TODO: check if there's need to reset view
                 this.panelNode.innerHTML = '';
                 if (this.data == null && !this.loadData() && this.activeView != 'Settings') {
                     this.displayNullInfo()
