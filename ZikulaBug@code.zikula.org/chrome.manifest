@@ -3,6 +3,7 @@ skin    ZikulaBug classic/1.0 chrome/skin/classic/
 
 locale  ZikulaBug en-US chrome/locale/en-US/
 locale  ZikulaBug pl-PL chrome/locale/pl-PL/
+locale  ZikulaBug de-DE chrome/locale/de-DE/
 
 
 overlay chrome://firebug/content/firebugOverlay.xul chrome://ZikulaBug/content/ZikulaBugOverlay.xul
