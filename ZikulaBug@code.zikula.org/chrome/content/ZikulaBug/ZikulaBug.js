@@ -10,6 +10,10 @@ FBL.ns(function() {
         AddonManager.getAddonByID(ZikulaBug.Meta.id, function(addon) {
             ZikulaBug.Meta.version = addon.version;
         });
+        // Firebug 1.8 compatibility
+        if (typeof ErrorCopy == 'undefined') {
+            var ErrorCopy = FirebugReps.ErrorCopy;
+        }
 
         // localisation
         function $ZB_STR(name)
@@ -61,7 +65,7 @@ FBL.ns(function() {
             return Firebug.setPref(Firebug.prefDomain, 'ZikulaBugPanel.' + key, value);
         };
         ZikulaBug.Util.getPanel = function(context) {
-            context = context || FirebugContext;
+            context = context || Firebug.currentContext;
             return context.getPanel('ZikulaBugPanel');
         };
 
@@ -1084,7 +1088,7 @@ FBL.ns(function() {
             },
             getPanel: function(context) {
                 fdump('ZikulaBugModel.getPanel');
-                context = context || FirebugContext;
+                context = context || Firebug.currentContext;
                 return context.getPanel('ZikulaBugPanel');
             },
             showPanel: function(browser, panel) {

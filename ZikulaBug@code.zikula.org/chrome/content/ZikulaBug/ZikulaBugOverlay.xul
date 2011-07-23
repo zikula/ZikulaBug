@@ -16,14 +16,14 @@
     </stringbundleset>
 
     <commandset id="mainCommandSet"> 
-        <command id="cmd_ZikulaBugGeneral" oncommand="Firebug.ZikulaBugModel.setActiveView(FirebugContext, 'General')"/>
-        <command id="cmd_ZikulaBugConfig" oncommand="Firebug.ZikulaBugModel.setActiveView(FirebugContext, 'Config')"/>
-        <command id="cmd_ZikulaBugSql" oncommand="Firebug.ZikulaBugModel.setActiveView(FirebugContext, 'Sql')"/>
-        <command id="cmd_ZikulaBugView" oncommand="Firebug.ZikulaBugModel.setActiveView(FirebugContext, 'View')"/>
-        <command id="cmd_ZikulaBugExec" oncommand="Firebug.ZikulaBugModel.setActiveView(FirebugContext, 'Exec')"/>
-        <command id="cmd_ZikulaBugLogs" oncommand="Firebug.ZikulaBugModel.setActiveView(FirebugContext, 'Logs')"/>
-        <command id="cmd_ZikulaBugRequest" oncommand="Firebug.ZikulaBugModel.setActiveView(FirebugContext, 'Request')"/>
-        <command id="cmd_ZikulaBugSettings" oncommand="Firebug.ZikulaBugModel.setActiveView(FirebugContext, 'Settings')"/>
+        <command id="cmd_ZikulaBugGeneral" oncommand="Firebug.ZikulaBugModel.setActiveView(Firebug.currentContext, 'General')"/>
+        <command id="cmd_ZikulaBugConfig" oncommand="Firebug.ZikulaBugModel.setActiveView(Firebug.currentContext, 'Config')"/>
+        <command id="cmd_ZikulaBugSql" oncommand="Firebug.ZikulaBugModel.setActiveView(Firebug.currentContext, 'Sql')"/>
+        <command id="cmd_ZikulaBugView" oncommand="Firebug.ZikulaBugModel.setActiveView(Firebug.currentContext, 'View')"/>
+        <command id="cmd_ZikulaBugExec" oncommand="Firebug.ZikulaBugModel.setActiveView(Firebug.currentContext, 'Exec')"/>
+        <command id="cmd_ZikulaBugLogs" oncommand="Firebug.ZikulaBugModel.setActiveView(Firebug.currentContext, 'Logs')"/>
+        <command id="cmd_ZikulaBugRequest" oncommand="Firebug.ZikulaBugModel.setActiveView(Firebug.currentContext, 'Request')"/>
+        <command id="cmd_ZikulaBugSettings" oncommand="Firebug.ZikulaBugModel.setActiveView(Firebug.currentContext, 'Settings')"/>
     </commandset> 
     
     <toolbar id="fbToolbar" align="center"> 
