@@ -29,8 +29,8 @@ FBL.ns(function() {
 
         // utils
         ZikulaBug.Util = {};
-        ZikulaBug.Util.parseTime = function (time, units) {
-            unit = units ? ' ms' : ''
+        ZikulaBug.Util.parseTime = function (time, unit) {
+            unit = unit ? ' ms' : ''
             return Number((Number(time)*1000).toFixed(2)).toLocaleString() + unit;
         };
         ZikulaBug.Util.parseMemory = function (number, units, format) {
@@ -75,7 +75,7 @@ FBL.ns(function() {
             observe: function(subject, topic, data) {
                 if (topic == 'http-on-modify-request') {
                     var httpChannel = subject.QueryInterface(Components.interfaces.nsIHttpChannel),
-                        prefs = ZikulaBug.Util.getPrefs('secKey') || {};
+                        prefs = ZikulaBug.Util.getPrefs('secKey') || {},
                         key = Object.keys(prefs).filter(function (element, index, array) {
                             return (httpChannel.name.indexOf(element) >= 0) ;
                         }).sort().reverse()[0];
@@ -415,8 +415,8 @@ FBL.ns(function() {
                 this.toggleVarRow(row);
             },
             toggleVarRow: function(row) {
-                var toggler = getChildByClass(row,'zkOpener');
-                    objElement = getChildByClass(row,'varTag');
+                var toggler = getChildByClass(row,'zkOpener'),
+                    objElement = getChildByClass(row,'varTag'),
                     obj = objElement.repObject || row.item.value,
                     rep = ZikulaBug.Tpl.getRep(obj);
                 if (!hasClass(toggler, 'opened')) {
@@ -524,7 +524,7 @@ FBL.ns(function() {
             getQueryTokens: function(query) {
                 var tokens = [],
                     queryArr = query.split(' '),
-                    tags = ['SELECT',' UPDATE', 'INSERT', 'DELETE', 'SET', 'FROM', 'LEFT JOIN', 'INNER JOIN', 'WHERE', 'GROUP BY', 'HAVING', 'ORDER BY', 'LIMIT', 'OFFSET'];
+                    tags = ['SELECT',' UPDATE', 'INSERT', 'DELETE', 'SET', 'FROM', 'LEFT JOIN', 'INNER JOIN', 'WHERE', 'GROUP BY', 'HAVING', 'ORDER BY', 'LIMIT', 'OFFSET'],
                     tagsInline = ['AS', 'IN', 'ON', 'AND', 'OR'];
 
                 for (var i = 0, limit = queryArr.length; i < limit; i++) {
