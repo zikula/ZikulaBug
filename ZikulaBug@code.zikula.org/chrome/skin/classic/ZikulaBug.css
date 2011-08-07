@@ -12,6 +12,10 @@
     border-left: 1px solid #CCCCCC;
     min-height: 100%;
 }
+.panelNode-ZikulaBugPanel #nullInfo.ZikulaBugWrapper {
+    padding: 10px 10px 0px 90px;
+    background: -moz-field url(chrome://ZikulaBug/skin/ZikulaBug32.png) no-repeat 30px 30px;
+}
 .panelNode-ZikulaBugPanel .zkOpener {
     background-image: url(chrome://firebug/skin/win/twistyClosed.png);
     background-repeat: no-repeat;

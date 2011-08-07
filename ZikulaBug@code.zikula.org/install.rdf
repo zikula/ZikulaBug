@@ -7,7 +7,8 @@
     <em:id>ZikulaBug@code.zikula.org</em:id>
     <em:version>1.0b1</em:version>
     <em:type>2</em:type>
-   
+    <em:iconURL>chrome://ZikulaBug/skin/ZikulaBug32.png</em:iconURL>
+
     <!-- Firefox -->
     <em:targetApplication>
       <Description>
@@ -19,7 +20,8 @@
 
     <em:name>ZikulaBug</em:name>
     <em:description>Zikula for Firebug Extension</em:description>
-    <em:creator>Paweł Preneta</em:creator>
+    <em:creator>Paweł Preneta (Jusuff)</em:creator>
+    <em:contributor>Mateusz Mirys (ZikulaBug logo)</em:contributor>
     <em:homepageURL>https://github.com/zikula/ZikulaBug</em:homepageURL>
-  </Description>      
+  </Description>
 </RDF>
