@@ -5,7 +5,7 @@
 
   <Description about="urn:mozilla:install-manifest">
     <em:id>ZikulaBug@code.zikula.org</em:id>
-    <em:version>1.0b1</em:version>
+    <em:version>1.0</em:version>
     <em:type>2</em:type>
     <em:iconURL>chrome://ZikulaBug/skin/ZikulaBug32.png</em:iconURL>
 
