@@ -1,5 +1,6 @@
 FBL.ns(function() {
     with (FBL) {
+        ZikulaBug = top.ZikulaBug;
         ZikulaBug.Tpl.Reps = {};
 
         var OBJECTBOX = FirebugReps.OBJECTBOX;
