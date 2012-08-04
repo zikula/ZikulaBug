@@ -1,4 +1,4 @@
-content ZikulaBug chrome/content/ZikulaBug/ xpcnativewrappers=no
+content ZikulaBug chrome/content/ZikulaBug/
 skin    ZikulaBug classic/1.0 chrome/skin/classic/
 
 locale  ZikulaBug en-US chrome/locale/en-US/
