@@ -1095,7 +1095,7 @@ FBL.ns(function() {
                 var isZikulaBug = panel && panel.name == 'ZikulaBugPanel';
                 if (isZikulaBug) {
                     fdump('ZikulaBugModel.showPanel');
-                    var ZikulaBugButtons = browser.chrome.$('fbZikulaBugButtons');
+                    var ZikulaBugButtons = Firebug.chrome.$('fbZikulaBugButtons');
                     collapse(ZikulaBugButtons, false);
                     this.setActiveView(null, null, ZikulaBugButtons);
                 }
