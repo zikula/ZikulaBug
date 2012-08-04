@@ -30,7 +30,7 @@ FBL.ns(function() {
         // utils
         ZikulaBug.Util = {};
         ZikulaBug.Util.parseTime = function (time, unit) {
-            unit = unit ? ' ms' : ''
+            unit = unit ? ' ms' : '';
             return Number((Number(time)*1000).toFixed(2)).toLocaleString() + unit;
         };
         ZikulaBug.Util.parseMemory = function (number, units, format) {
@@ -191,7 +191,7 @@ FBL.ns(function() {
                     setClass(row, 'closed');
 
                     if (isString) {
-                        var rowValue = row.domObject.value
+                        var rowValue = row.domObject.value;
                         row.lastChild.firstChild.textContent = '"' + cropMultipleLines(rowValue, ZikulaBug.Tpl.Reps.StringMaxLenght) + '"';
                     } else {
                         var rowTag = this.varListRowTag;
@@ -212,7 +212,7 @@ FBL.ns(function() {
                     setClass(row, 'opened');
 
                     if (isString) {
-                        var rowValue = row.domObject.value
+                        var rowValue = row.domObject.value;
                         row.lastChild.firstChild.textContent = '"' + rowValue + '"';
                     } else {
                         var value = row.lastChild.firstChild.repObject;
@@ -826,7 +826,7 @@ FBL.ns(function() {
                         try {
                             var decoded = JSON.parse(decodeURI(decodeURI(data.cookie[prop]))),
                                 orginal = data.cookie[prop];
-                            data.cookie[prop] = {}
+                            data.cookie[prop] = {};
                             data.cookie[prop][$ZB_STR('ZikulaBug.OrginalCookie')] = orginal;
                             data.cookie[prop][$ZB_STR('ZikulaBug.DecodedCookie')] = decoded;
                         } catch (e) {}
@@ -996,7 +996,7 @@ FBL.ns(function() {
                 }
                 this.panelNode.innerHTML = '';
                 if (this.data == null && !this.loadData() && this.activeView != 'Settings') {
-                    this.displayNullInfo()
+                    this.displayNullInfo();
                     return;
                 }
 //                dump('this.panelNode', this.panelNode, this);
@@ -1129,7 +1129,7 @@ FBL.ns(function() {
                 } else {
                     ZikulaBug.httpRequestObserver.unregister();
                 }
-            },
+            }
         });
 
         // debug
@@ -1140,7 +1140,7 @@ FBL.ns(function() {
         function fdump() {
             return;
             var name = arguments[0],
-                args = fdump.caller.arguments
+                args = fdump.caller.arguments;
             Firebug.Console.log(['FDUMP: ' +name, args]);
         }
 
