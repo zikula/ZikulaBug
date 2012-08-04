@@ -5,7 +5,7 @@
 
   <Description about="urn:mozilla:install-manifest">
     <em:id>ZikulaBug@code.zikula.org</em:id>
-    <em:version>1.0</em:version>
+    <em:version>1.1</em:version>
     <em:type>2</em:type>
     <em:iconURL>chrome://ZikulaBug/skin/ZikulaBug32.png</em:iconURL>
 
@@ -13,8 +13,8 @@
     <em:targetApplication>
       <Description>
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
-        <em:minVersion>4.0</em:minVersion>
-        <em:maxVersion>5.*</em:maxVersion>
+        <em:minVersion>14.0</em:minVersion>
+        <em:maxVersion>16.0a1</em:maxVersion>
       </Description>
     </em:targetApplication>
 
